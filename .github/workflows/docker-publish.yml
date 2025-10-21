@@ -9,13 +9,53 @@ on:
   workflow_dispatch:
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      should_run: ${{ steps.set-matrix.outputs.should_run }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed components
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          filters: |
+            oauth:
+              - 'oauth/**'
+            worker:
+              - 'worker/**'
+
+      - name: Build dynamic matrix
+        id: set-matrix
+        shell: bash
+        run: |
+          components=()
+          if [[ "${{ steps.changes.outputs.oauth }}" == 'true' ]]; then components+=('"oauth"'); fi
+          if [[ "${{ steps.changes.outputs.worker }}" == 'true' ]]; then components+=('"worker"'); fi
+
+          if [ ${#components[@]} -eq 0 ]; then
+            echo 'matrix={"extra":[]}' >> "$GITHUB_OUTPUT"
+            echo 'should_run=false' >> "$GITHUB_OUTPUT"
+            echo "No component changes detected — skipping build."
+          else
+            echo "matrix={\"extra\":[${components[*]}]}" >> "$GITHUB_OUTPUT"
+            echo 'should_run=true' >> "$GITHUB_OUTPUT"
+            echo "Will build components: [${components[*]}]"
+          fi
+
   build:
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
-      matrix:
-        extra: [ "oauth", "worker" ]
+      matrix: ${{ fromJSON(needs.changes.outputs.matrix) }}
 
     steps:
       - name: Checkout code
