@@ -36,13 +36,9 @@ async def callback(request):
                 error = await resp.json()
                 return web.Response(text=f"Error: {error}", status=resp.status)
 
-async def redirect_root(request):
-    raise web.HTTPFound('/login')
-
 def run_server():
     app = web.Application()
     app.add_routes([
-        web.get('/', redirect_root),
         web.get('/login', authorize),
         web.get('/' + '/'.join(redirect_uri.split('/')[3:]), callback)
     ])
