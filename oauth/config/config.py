@@ -8,6 +8,7 @@ class Config:
     hhapp_id: str = 'None'
     hhapp_secret: str = 'None'
     redirect_uri: str = 'https://localhost/api/auth'
+    auth_prefix: str = '/login'
 
     @classmethod
     def load_from_env(cls):

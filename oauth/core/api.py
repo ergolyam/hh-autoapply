@@ -39,7 +39,7 @@ async def callback(request):
 def run_server():
     app = web.Application()
     app.add_routes([
-        web.get('/login', authorize),
+        web.get(f'{Config.auth_prefix}', authorize),
         web.get('/' + '/'.join(redirect_uri.split('/')[3:]), callback)
     ])
 
