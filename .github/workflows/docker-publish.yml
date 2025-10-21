@@ -7,6 +7,16 @@ on:
     paths-ignore:
       - 'readme.md'
   workflow_dispatch:
+    inputs:
+      components:
+        description: 'What to collect during manual start-up'
+        type: choice
+        required: true
+        default: 'both'
+        options:
+          - oauth
+          - worker
+          - both
 
 jobs:
   changes:
@@ -36,18 +46,30 @@ jobs:
         id: set-matrix
         shell: bash
         run: |
+          choice="${{ github.event.inputs.components }}"
           components=()
-          if [[ "${{ steps.changes.outputs.oauth }}" == 'true' ]]; then components+=('"oauth"'); fi
-          if [[ "${{ steps.changes.outputs.worker }}" == 'true' ]]; then components+=('"worker"'); fi
+
+          if [[ -n "$choice" ]]; then
+            case "$choice" in
+              oauth)  components+=('"oauth"') ;;
+              worker) components+=('"worker"') ;;
+              both)   components+=('"oauth"' '"worker"') ;;
+            esac
+            echo "Manual selection: $choice"
+          else
+            [[ "${{ steps.changes.outputs.oauth }}"  == 'true' ]] && components+=('"oauth"')
+            [[ "${{ steps.changes.outputs.worker }}" == 'true' ]] && components+=('"worker"')
+            echo "Auto-detected components from push."
+          fi
 
           if [ ${#components[@]} -eq 0 ]; then
             echo 'matrix={"extra":[]}' >> "$GITHUB_OUTPUT"
-            echo 'should_run=false' >> "$GITHUB_OUTPUT"
-            echo "No component changes detected — skipping build."
+            echo 'should_run=false'     >> "$GITHUB_OUTPUT"
+            echo "No components selected/changed — skipping build."
           else
             echo "matrix={\"extra\":[${components[*]}]}" >> "$GITHUB_OUTPUT"
             echo 'should_run=true' >> "$GITHUB_OUTPUT"
-            echo "Will build components: [${components[*]}]"
+            echo "Will build: [${components[*]}]"
           fi
 
   build:
