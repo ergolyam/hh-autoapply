@@ -1,4 +1,5 @@
-from aiohttp import web, ClientSession
+from aiohttp import ClientSession
+from aiohttp.web import Application, HTTPFound, Response, get, run_app
 from oauth.config.config import Config
 
 client_id = Config.hhapp_id
@@ -10,12 +11,12 @@ async def authorize(request):
         f"https://hh.ru/oauth/authorize?"
         f"response_type=code&client_id={client_id}&redirect_uri={redirect_uri}"
     )
-    raise web.HTTPFound(auth_url)
+    raise HTTPFound(auth_url)
 
 async def callback(request):
     code = request.query.get("code")
     if not code:
-        return web.Response(text="Error: authorization code is not received", status=400)
+        return Response(text="Error: authorization code is not received", status=400)
     
     token_url = "https://hh.ru/oauth/token"
     data = {
@@ -31,19 +32,19 @@ async def callback(request):
             if resp.status == 200:
                 token_response = await resp.json()
                 access_token = token_response.get("access_token")
-                return web.Response(text=f"Access token: {access_token}")
+                return Response(text=f"Access token: {access_token}")
             else:
                 error = await resp.json()
-                return web.Response(text=f"Error: {error}", status=resp.status)
+                return Response(text=f"Error: {error}", status=resp.status)
 
 def run_server():
-    app = web.Application()
+    app = Application()
     app.add_routes([
-        web.get(f'{Config.auth_prefix}', authorize),
-        web.get('/' + '/'.join(redirect_uri.split('/')[3:]), callback)
+        get(f'{Config.auth_prefix}', authorize),
+        get('/' + '/'.join(redirect_uri.split('/')[3:]), callback)
     ])
 
-    web.run_app(app, host=Config.api_host, port=Config.api_port)
+    run_app(app, host=Config.api_host, port=Config.api_port)
 
 if __name__ == "__main__":
     raise RuntimeError("This module should be run only via main.py")
