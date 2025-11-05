@@ -7,6 +7,7 @@ config_path = Config.config_path
 default_config = {
     "settings": {
         "oauth_token": "abcde12345",
+        "resume_id": "abcde12345"
     },
     "filters": {
         "only_with_salary": False,
