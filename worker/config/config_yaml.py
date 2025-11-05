@@ -1,9 +1,6 @@
 import yaml, os
 
 from worker.config.config import Config
-from worker.config import logging_config
-logging = logging_config.setup_logging(__name__)
-
 
 config_path = Config.config_path
 
@@ -26,7 +23,7 @@ def load_config(path: str = config_path, defaults: dict = {} ) -> dict:
     if not os.path.exists(path):
         with open(path, "w", encoding="utf-8") as f:
             yaml.safe_dump(defaults, f, allow_unicode=True, sort_keys=False)
-        logging.info(f"New configuration created: {path}")
+        print(f"New configuration created: {path}")
 
     with open(path, "r", encoding="utf-8") as f:
         config = yaml.safe_load(f) or {}

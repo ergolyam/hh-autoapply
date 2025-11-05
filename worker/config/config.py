@@ -1,8 +1,6 @@
 import os
 
 class Config:
-    log_level: str = "INFO"
-    log_path: str = '/tmp/worker.log'
     config_path: str = './config.yaml'
     app_name: str = 'HeadLarga'
     app_email: str = 'HeadLarga@ergolyam.top'
