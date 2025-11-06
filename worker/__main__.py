@@ -1,16 +1,20 @@
 import os, sys, asyncio
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import json
 
 from worker.config.config import Config
 from worker.core.helpers import Common
 
 from worker.api.get_resume import resume_request
+from worker.api.get_vacancies import vacancies_request
 
 async def main():
     argv = sys.argv[1:]
     resumes = await resume_request()
+    vacancies = await vacancies_request(resume_id=Common.cfg['settings']['resume_id'], page=0)
     if not argv:
         print(resumes)
+        print(json.dumps(vacancies, indent=4, ensure_ascii=False))
         return
     try:
         idx = int(argv[1])
