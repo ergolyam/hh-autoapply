@@ -19,15 +19,15 @@ async def main():
     try:
         idx = int(argv[1])
     except ValueError:
-        print(f"The index must be a number, not '{argv[1]}'")
+        print(f'The index must be a number, not "{argv[1]}"')
         return
-    if len(argv) == 2 and argv[0] == "--set":
+    if len(argv) == 2 and argv[0] == '--set':
         value = resumes.get(idx)
         assert value
         value_id = value.get('resume_id')
         Common.cfg['settings']['resume_id'] = value_id
         Common.cfg.save()
-        print(f"Set resume id: {value_id}")
+        print(f'Set resume id: {value_id}')
 
 if __name__ == '__main__':
     asyncio.run(main())

@@ -17,11 +17,11 @@ class Config:
                 elif isinstance(current_value, float):
                     setattr(cls, key, float(env_value))
                 elif isinstance(current_value, list):
-                    setattr(cls, key, env_value.split(","))
+                    setattr(cls, key, env_value.split(','))
                 else:
                     setattr(cls, key, env_value)
 
 Config.load_from_env()
 
-if __name__ == "__main__":
-    raise RuntimeError("This module should be run only via main.py")
+if __name__ == '__main__':
+    raise RuntimeError('This module should be run only via main.py')

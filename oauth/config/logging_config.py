@@ -1,14 +1,14 @@
 import logging, os
 from oauth.config.config import Config
 
-RESET = "\x1b[0m"
-WHITE = "\x1b[0m"
+RESET = '\x1b[0m'
+WHITE = '\x1b[0m'
 COLORS = {
-    'DEBUG': "\x1b[34m",      # Blue
-    'INFO': "\x1b[32m",       # Green
-    'WARNING': "\x1b[33m",    # Yellow
-    'ERROR': "\x1b[31m",      # Red
-    'CRITICAL': "\x1b[41m",   # Red background
+    'DEBUG': '\x1b[34m',      # Blue
+    'INFO': '\x1b[32m',       # Green
+    'WARNING': '\x1b[33m',    # Yellow
+    'ERROR': '\x1b[31m',      # Red
+    'CRITICAL': '\x1b[41m',   # Red background
 }
 
 class ColoredFormatter(logging.Formatter):
@@ -16,14 +16,14 @@ class ColoredFormatter(logging.Formatter):
         log_color = COLORS.get(record.levelname, RESET)
         message = super().format(record)
         filename = os.path.splitext(os.path.basename(record.pathname))[0]
-        return f"{log_color}{record.levelname}{RESET}{WHITE}: {filename}: {message}{RESET}"
+        return f'{log_color}{record.levelname}{RESET}{WHITE}: {filename}: {message}{RESET}'
 
 class FileFormatter(logging.Formatter):
     def format(self, record):
         record.asctime = self.formatTime(record, self.datefmt)
         filename = os.path.basename(record.pathname)
         message = super().format(record)
-        return f"{record.asctime} - {record.levelname}: {filename}:{record.lineno} {message}"
+        return f'{record.asctime} - {record.levelname}: {filename}:{record.lineno} {message}'
 
 def setup_logging(name='my_app', log_file=Config.log_path):
     logger = logging.getLogger(name)
@@ -36,7 +36,7 @@ def setup_logging(name='my_app', log_file=Config.log_path):
         file_handler = logging.FileHandler(log_file)
         file_formatter = FileFormatter('%(message)s')
         file_handler.setFormatter(file_formatter)
-        file_handler.setLevel(getattr(logging, "DEBUG", logging.INFO))
+        file_handler.setLevel(getattr(logging, 'DEBUG', logging.INFO))
         logger.addHandler(stream_handler)
         logger.addHandler(file_handler)
     

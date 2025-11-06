@@ -5,15 +5,15 @@ from worker.config.config import Config
 config_path = Config.config_path
 
 default_config = {
-    "settings": {
-        "oauth_token": "abcde12345",
-        "resume_id": "abcde12345"
+    'settings': {
+        'oauth_token': 'abcde12345',
+        'resume_id': 'abcde12345'
     },
-    "filters": {
-        "only_with_salary": False,
-        "currency": "RUR",
-        "professional_role": 1,
-        "experience": 1
+    'filters': {
+        'only_with_salary': False,
+        'currency': 'RUR',
+        'professional_role': 1,
+        'experience': 1
     }
 }
 
@@ -22,17 +22,17 @@ def load_config(path: str = config_path, defaults: dict = {} ) -> dict:
     defaults = defaults or default_config
 
     if not os.path.exists(path):
-        with open(path, "w", encoding="utf-8") as f:
+        with open(path, 'w', encoding='utf-8') as f:
             yaml.safe_dump(defaults, f, allow_unicode=True, sort_keys=False)
-        print(f"New configuration created: {path}")
+        print(f'New configuration created: {path}')
 
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, 'r', encoding='utf-8') as f:
         config = yaml.safe_load(f) or {}
 
     updated = _merge_defaults(config, defaults)
 
     if updated:
-        with open(path, "w", encoding="utf-8") as f:
+        with open(path, 'w', encoding='utf-8') as f:
             yaml.safe_dump(config, f, allow_unicode=True, sort_keys=False)
 
     return config
@@ -57,7 +57,7 @@ class YamlConfig:
         self.data = load_config(path, self.defaults)
 
     def save(self):
-        with open(self.path, "w", encoding="utf-8") as f:
+        with open(self.path, 'w', encoding='utf-8') as f:
             yaml.safe_dump(self.data, f, allow_unicode=True, sort_keys=False)
 
     def __getitem__(self, item):
@@ -68,5 +68,5 @@ class YamlConfig:
         self.save()
 
 
-if __name__ == "__main__":
-    raise RuntimeError("This module should be run only via main.py")
+if __name__ == '__main__':
+    raise RuntimeError('This module should be run only via main.py')

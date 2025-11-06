@@ -8,13 +8,13 @@ async def resume_request() -> dict:
         resumes_dict = {}
         for idx, r in enumerate(items, start=1):
             resumes_dict[idx] = {
-                "resume_id": r.get("id", ""),
-                "title": r.get("title", "")
+                'resume_id': r.get('id', ''),
+                'title': r.get('title', '')
             }
         return resumes_dict
     else:
         raise Exception(f'Error {resp.get('status_code', None)}: {resp.get('details', None)}')
 
 
-if __name__ == "__main__":
-    raise RuntimeError("This module should be run only via main.py")
+if __name__ == '__main__':
+    raise RuntimeError('This module should be run only via main.py')
