@@ -30,7 +30,7 @@ def load_config(path: str = config_path, defaults: dict = {} ) -> dict:
     with open(path, 'r', encoding='utf-8') as f:
         config = yaml.safe_load(f) or {}
 
-    updated = _merge_defaults(config, defaults)
+    updated = merge_defaults(config, defaults)
 
     if updated:
         with open(path, 'w', encoding='utf-8') as f:
@@ -39,14 +39,19 @@ def load_config(path: str = config_path, defaults: dict = {} ) -> dict:
     return config
 
 
-def _merge_defaults(config: dict, defaults: dict) -> bool:
+def none_like(template):
+    if isinstance(template, dict):
+        return {k: none_like(v) for k, v in template.items()}
+    return None
+
+
+def merge_defaults(config: dict, defaults: dict) -> bool:
     updated = False
     for key, val in defaults.items():
         if key not in config:
-            config[key] = val
-            updated = True
+            config[key] = none_like(val)
         elif isinstance(val, dict):
-            if _merge_defaults(config[key], val):
+            if merge_defaults(config[key], val):
                 updated = True
     return updated
 
