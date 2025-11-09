@@ -11,7 +11,10 @@ from worker.api.get_vacancies import vacancies_request
 async def main():
     argv = sys.argv[1:]
     resumes = await resume_request()
-    vacancies = await vacancies_request(resume_id=Common.cfg['settings']['resume_id'], page=0)
+    vacancies = await vacancies_request(
+        resume_id=Common.cfg['settings']['resume_id'],
+        page=0
+    )
     if not argv:
         print(resumes)
         print(json.dumps(vacancies, indent=4, ensure_ascii=False))
