@@ -1,4 +1,5 @@
 from worker.api.base import request
+from worker.core.helpers import Common
 
 
 async def vacancy_detals(id: int):
@@ -13,12 +14,21 @@ async def vacancy_detals(id: int):
 async def vacancies_request(resume_id: str, page: int = 0):
     resp = await request(
         path=f'resumes/{resume_id}/similar_vacancies',
-        params={'page': 0, 'per_page': 10}
+        params={
+            'page': page,
+            'per_page': 10,
+            'text': Common.cfg['vacancies']['text'],
+            'experience': Common.cfg['vacancies']['experience'],
+            'employment': Common.cfg['vacancies']['employment'],
+            'schedule': Common.cfg['vacancies']['schedule'],
+            'salary': Common.cfg['vacancies']['salary']
+        }
     )
     if resp.get('ok', False):
         data = resp.get('data', {})
         items = data.get('items', {})
         vacancies = []
+        vacancies.append({'pages': data.get('pages')})
         for item in items:
             snippet = item.get('snippet', {})
             salary = item.get('salary', {})

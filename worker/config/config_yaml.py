@@ -9,11 +9,12 @@ default_config = {
         'oauth_token': 'abcde12345',
         'resume_id': 'abcde12345'
     },
-    'filters': {
-        'only_with_salary': False,
-        'currency': 'RUR',
-        'professional_role': 1,
-        'experience': 1
+    'vacancies': {
+        'text': 'Python Developer',
+        'experience': 'between1And3',
+        'employment': 'full',
+        'schedule': 'remote',
+        'salary': 100000
     }
 }
 
