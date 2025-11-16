@@ -12,7 +12,7 @@ async def vacancy_detals(id: int):
 
 
 def drop_none(d: dict) -> dict:
-    return {k: v for k, v in d.items() if v is not None}
+    return {k: v for k, v in d.items() if v not in (None, 'None')}
 
 
 async def vacancies_request(resume_id: str, page: int = 0):
@@ -25,6 +25,7 @@ async def vacancies_request(resume_id: str, page: int = 0):
         'schedule': Common.cfg['vacancies']['schedule'],
         'salary': Common.cfg['vacancies']['salary']
     })
+    print(params)
     resp = await request(
         path=f'resumes/{resume_id}/similar_vacancies',
         params=params
