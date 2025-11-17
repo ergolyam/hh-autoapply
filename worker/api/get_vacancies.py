@@ -25,7 +25,6 @@ async def vacancies_request(resume_id: str, page: int = 0):
         'schedule': Common.cfg['vacancies']['schedule'],
         'salary': Common.cfg['vacancies']['salary']
     })
-    print(params)
     resp = await request(
         path=f'resumes/{resume_id}/similar_vacancies',
         params=params
