@@ -24,30 +24,30 @@ class Common():
 
 class RotatingGeminiKeyClient(httpx.AsyncClient):
     def __init__(self, keys, **kwargs):
-        kwargs.setdefault("timeout", Common.client_timeout)
-        hooks = kwargs.setdefault("event_hooks", {})
-        hooks.setdefault("request", []).append(self._add_header)
+        kwargs.setdefault('timeout', Common.client_timeout)
+        hooks = kwargs.setdefault('event_hooks', {})
+        hooks.setdefault('request', []).append(self._add_header)
         self._keys = cycle(keys)
         super().__init__(**kwargs)
     async def _add_header(self, request: httpx.Request):
         key = next(self._keys)
-        print(f"Use Gemini api key: ...{key[-4:]}")
-        request.headers["X-Goog-Api-Key"] = key
+        print(f'Use Gemini api key: ...{key[-4:]}')
+        request.headers['X-Goog-Api-Key'] = key
 
 
 class RotatingOpenAIKeyClient(httpx.AsyncClient):
     def __init__(self, keys, **kwargs):
-        kwargs.setdefault("timeout", Common.client_timeout)
-        hooks = kwargs.setdefault("event_hooks", {})
-        hooks.setdefault("request", []).append(self._add_header)
+        kwargs.setdefault('timeout', Common.client_timeout)
+        hooks = kwargs.setdefault('event_hooks', {})
+        hooks.setdefault('request', []).append(self._add_header)
         self._keys = cycle(keys)
         super().__init__(**kwargs)
     async def _add_header(self, request: httpx.Request):
         key = next(self._keys)
-        print(f"Use OpenAI api key: ...{key[-4:]}")
-        request.headers.pop("Authorization", None)
-        request.headers["Authorization"] = f"Bearer {key}"
+        print(f'Use OpenAI api key: ...{key[-4:]}')
+        request.headers.pop('Authorization', None)
+        request.headers['Authorization'] = f'Bearer {key}'
 
 
-if __name__ == "__main__":
-    raise RuntimeError("This module should be run only via main.py")
+if __name__ == '__main__':
+    raise RuntimeError('This module should be run only via main.py')

@@ -51,7 +51,7 @@ async def init_llm():
         Common.model = Common.openai_model(
             model_name=Config.model_name,
             provider=Common.openai_provider(
-                api_key="dummy",
+                api_key='dummy',
                 base_url=Config.openai_base_url,
                 http_client=RotatingOpenAIKeyClient(Config.api_key)
             ),
@@ -65,6 +65,6 @@ async def init_llm():
     )
 
 
-if __name__ == "__main__":
-    raise RuntimeError("This module should be run only via main.py")
+if __name__ == '__main__':
+    raise RuntimeError('This module should be run only via main.py')
 

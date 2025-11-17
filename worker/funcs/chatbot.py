@@ -38,14 +38,14 @@ class VacancyBot:
         self.agent_result = result.output
 
     def show_selection(self) -> bool:
-        print(f"Selection call: {agent_selection}")
+        print(f'Selection call: {agent_selection}')
         return agent_selection
 
     def show_agent_result(self) -> str:
-        print(f"Agent result: {self.agent_result}")
+        print(f'Agent result: {self.agent_result}')
         return self.agent_result
 
 
-if __name__ == "__main__":
-    raise RuntimeError("This module should be run only via main.py")
+if __name__ == '__main__':
+    raise RuntimeError('This module should be run only via main.py')
 
