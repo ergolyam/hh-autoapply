@@ -1,13 +1,12 @@
 import os, sys, asyncio
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import json
 
-from worker.config.config import Config
 from worker.core.helpers import Common
 
 from worker.api.get_resume import resume_request
-from worker.api.get_vacancies import vacancies_request
 from worker.api.get_handbook import handbook_request
+from worker.funcs.vacancies import cycle_responses
+from worker.core.llm import init_llm
 
 async def main():
     argv = sys.argv[1:]
@@ -39,11 +38,8 @@ script.py --help [ experience, employment, schedule ] - display this message or 
             resumes = await resume_request()
             print(resumes)
         case [] | _ if not argv:
-            vacancies = await vacancies_request(
-                resume_id=Common.cfg['settings']['resume_id'],
-                page=0
-            )
-            print(json.dumps(vacancies, indent=4, ensure_ascii=False))
+            await init_llm()
+            await cycle_responses()
         case _:
             print('Unknown command. Use --help')
 
