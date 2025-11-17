@@ -5,6 +5,10 @@ class Config:
     app_name: str = 'HeadLarga'
     app_email: str = 'HeadLarga@ergolyam.top'
     hh_api_domain: str = 'api.hh.ru'
+    model_name: str = ''
+    api_key: list = []
+    openai_base_url: str = ''
+    retries: int = 10
 
     @classmethod
     def load_from_env(cls):
