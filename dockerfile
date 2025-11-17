@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:python3.12-alpine AS builder
+FROM ghcr.io/astral-sh/uv:python3.12-trixie-slim AS builder
 
 ARG EXTRA
 
@@ -9,7 +9,7 @@ COPY pyproject.toml uv.lock /app
 RUN uv sync --no-cache --extra ${EXTRA}
 
 
-FROM python:3.12-alpine AS main
+FROM python:3.12-slim-trixie AS main
 
 ARG EXTRA
 
