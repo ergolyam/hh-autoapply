@@ -19,11 +19,11 @@ async def vacancies_request(resume_id: str, page: int = 0):
     params = drop_none({
         'page': page,
         'per_page': 10,
-        'text': Common.cfg['vacancies']['text'],
-        'experience': Common.cfg['vacancies']['experience'],
-        'employment': Common.cfg['vacancies']['employment'],
-        'schedule': Common.cfg['vacancies']['schedule'],
-        'salary': Common.cfg['vacancies']['salary']
+        'text': Common.cfg['posting_vacancies']['text'],
+        'experience': Common.cfg['posting_vacancies']['experience'],
+        'employment': Common.cfg['posting_vacancies']['employment'],
+        'schedule': Common.cfg['posting_vacancies']['schedule'],
+        'salary': Common.cfg['posting_vacancies']['salary']
     })
     resp = await request(
         path=f'resumes/{resume_id}/similar_vacancies',

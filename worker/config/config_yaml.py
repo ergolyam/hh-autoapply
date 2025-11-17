@@ -9,7 +9,7 @@ default_config = {
         'oauth_token': 'abcde12345',
         'resume_id': 'abcde12345'
     },
-    'vacancies': {
+    'posting_vacancies': {
         'text': 'Python Developer',
         'experience': 'between1And3',
         'employment': 'full',
