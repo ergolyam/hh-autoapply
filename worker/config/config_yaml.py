@@ -15,6 +15,9 @@ default_config = {
         'employment': 'full',
         'schedule': 'remote',
         'salary': 100000
+    },
+    'input': {
+        'filter_phrase': 'Accept job offers related to Python development.'
     }
 }
 
