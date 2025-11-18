@@ -17,7 +17,8 @@ default_config = {
         'salary': 100000
     },
     'input': {
-        'filter_phrase': 'Accept job offers related to Python development.'
+        'filter_phrase': 'Accept job offers related to Python development.',
+        'response_message': 'Hello, I would like to apply for a job at your company. I am an experienced IT specialist in Python development.'
     }
 }
 
