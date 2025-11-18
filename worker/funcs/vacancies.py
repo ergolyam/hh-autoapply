@@ -7,15 +7,12 @@ from worker.api.ntfysh import send_notify
 async def cycle_responses():
     bot = VacancyBot()
     bot.set_filter_phrase(Common.cfg['input']['filter_phrase'])
-    page = 0
 
-    first_page = await vacancies_request(
-        resume_id=Common.cfg['settings']['resume_id'],
-        page=page
-    )
+    first_page = await vacancies_request()
 
     total_pages = first_page[0]['pages']
-    total_pages_msg = f'Total pages: {total_pages}'
+    total_vacancies = first_page[0]['total']
+    total_pages_msg = f'Total pages: {total_pages}\nTotal vacancies: {total_vacancies}'
     print(total_pages_msg)
     await send_notify(
         title='Responses have started!',
@@ -50,7 +47,6 @@ async def cycle_responses():
 
     for page in range(1, total_pages):
         vacancies = await vacancies_request(
-            resume_id=Common.cfg['settings']['resume_id'],
             page=page
         )
 
