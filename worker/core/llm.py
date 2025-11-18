@@ -18,7 +18,7 @@ async def init_llm():
             model_name=Config.model_name,
             provider=Common.gemini_provider(
                 api_key='dummy',
-                http_client=RotatingGeminiKeyClient(Config.api_key)
+                http_client=RotatingGeminiKeyClient(Config.api_key, min_interval=4.2)
             ),
         )
         categories = (

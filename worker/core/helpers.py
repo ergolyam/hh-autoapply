@@ -1,4 +1,4 @@
-import httpx
+import httpx, asyncio, time
 from itertools import cycle
 import pydantic_ai.models.openai
 import pydantic_ai.providers.openai
@@ -23,13 +23,25 @@ class Common():
 
 
 class RotatingGeminiKeyClient(httpx.AsyncClient):
-    def __init__(self, keys, **kwargs):
+    def __init__(self, keys, min_interval: float | None = None, **kwargs):
         kwargs.setdefault('timeout', Common.client_timeout)
         hooks = kwargs.setdefault('event_hooks', {})
-        hooks.setdefault('request', []).append(self._add_header)
+        hooks.setdefault('request', []).append(self._before_request)
         self._keys = cycle(keys)
+        self._min_interval = min_interval
+        self._last_request_ts = 0.0
+        self._lock = asyncio.Lock()
         super().__init__(**kwargs)
-    async def _add_header(self, request: httpx.Request):
+    async def _before_request(self, request: httpx.Request):
+        if self._min_interval is not None:
+            async with self._lock:
+                now = time.monotonic()
+                delta = now - self._last_request_ts
+                wait_for = self._min_interval - delta
+                if wait_for > 0:
+                    await asyncio.sleep(wait_for)
+                    now = time.monotonic()
+                self._last_request_ts = now
         key = next(self._keys)
         print(f'Use Gemini api key: ...{key[-4:]}')
         request.headers['X-Goog-Api-Key'] = key
