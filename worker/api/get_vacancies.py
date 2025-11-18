@@ -15,7 +15,7 @@ def drop_none(d: dict) -> dict:
     return {k: v for k, v in d.items() if v not in (None, 'None')}
 
 
-async def vacancies_request(resume_id: str, page: int = 0):
+async def vacancies_request(page: int = 0):
     params = drop_none({
         'page': page,
         'per_page': 10,
@@ -26,14 +26,19 @@ async def vacancies_request(resume_id: str, page: int = 0):
         'salary': Common.cfg['posting_vacancies']['salary']
     })
     resp = await request(
-        path=f'resumes/{resume_id}/similar_vacancies',
+        path=f'vacancies',
         params=params
     )
     if resp.get('ok', False):
         data = resp.get('data', {})
         items = data.get('items', {})
         vacancies = []
-        vacancies.append({'pages': data.get('pages')})
+        vacancies.append(
+            {
+                'pages': data.get('pages'),
+                'total': data.get('found')
+            }
+        )
         for item in items:
             snippet = item.get('snippet', {})
             salary = item.get('salary', {})
