@@ -9,6 +9,8 @@ class Config:
     api_key: list = []
     openai_base_url: str = ''
     retries: int = 10
+    ntfy_url: str = 'https://ntfy.sh'
+    ntfy_topic: str = 'ergolyam'
 
     @classmethod
     def load_from_env(cls):
