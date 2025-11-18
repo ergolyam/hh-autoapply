@@ -20,15 +20,14 @@ async def send_notify(text: str, title: str = '', click: str = ''):
 
     response = await Common.http.post(**kargs)
     if response.status_code == 200:
-        data = response.json()
-        return {'ok': True, 'data': data}
+        return
 
     try:
         err = response.json()
         details = err.get('description') or err.get('error') or err
     except Exception:
         details = response.text
-    return {'ok': False, 'status_code': response.status_code, 'details': details}
+    raise Exception(f'Error {response.status_code}: {details}')
 
 if __name__ == '__main__':
     raise RuntimeError('This module should be run only via main.py')
