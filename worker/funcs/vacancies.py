@@ -1,6 +1,7 @@
 from worker.api.get_vacancies import vacancies_request
 from worker.core.helpers import Common
 from worker.funcs.chatbot import VacancyBot
+from worker.api.ntfysh import send_notify
 
 
 async def cycle_responses():
@@ -14,14 +15,38 @@ async def cycle_responses():
     )
 
     total_pages = first_page[0]['pages']
-    print(f'Total pages: {total_pages}')
+    total_pages_msg = f'Total pages: {total_pages}'
+    print(total_pages_msg)
+    await send_notify(
+        title='Responses have started!',
+        text=total_pages_msg
+    )
 
-    print('Page 0:')
+    page_msg = f'Page 0|{total_pages}'
+    print(page_msg)
+    await send_notify(text=page_msg)
     for vac in first_page[1:]:
-        print(vac['id'])
-        await bot.run_bot(f'name: {vac['name']}\nrequirement: {vac['requirement']}\nresponsibility: {vac['responsibility']}\ndescription: {vac['description']}')
-        bot.show_agent_result()
-        bot.show_selection()
+        vid = vac['id']
+        print(vid)
+        bot_msg = f'''
+        name: {vac['name']}\n
+        requirement: {vac['requirement']}\n
+        responsibility: {vac['responsibility']}\n
+        description: {vac['description']}
+        '''
+        await bot.run_bot(bot_msg)
+        result = bot.show_agent_result()
+        selection = bot.show_selection()
+        ntfy_title = f'[{vid}]: {vac['name']}'
+        ntfy_msg = f'''
+        llm selected: {selection}
+        llm commented: {result}
+        '''
+        await send_notify(
+            title=ntfy_title,
+            text=ntfy_msg,
+            click=vac['url']
+        )
 
     for page in range(1, total_pages):
         vacancies = await vacancies_request(
@@ -29,12 +54,31 @@ async def cycle_responses():
             page=page
         )
 
-        print(f'\nPage {page}:')
+        page_msg = f'Page {page}|{total_pages}'
+        print(page_msg)
+        await send_notify(text=page_msg)
         for vac in vacancies[1:]:
-            print(vac['id'])
-            await bot.run_bot(f'name: {vac['name']}\nrequirement: {vac['requirement']}\nresponsibility: {vac['responsibility']}\ndescription: {vac['description']}')
-            bot.show_agent_result()
-            bot.show_selection()
+            vid = vac['id']
+            print(vid)
+            bot_msg = f'''
+            name: {vac['name']}\n
+            requirement: {vac['requirement']}\n
+            responsibility: {vac['responsibility']}\n
+            description: {vac['description']}
+            '''
+            await bot.run_bot(bot_msg)
+            result = bot.show_agent_result()
+            selection = bot.show_selection()
+            ntfy_title = f'[{vid}]: {vac['name']}'
+            ntfy_msg = f'''
+            llm selected: {selection}
+            llm commented: {result}
+            '''
+            await send_notify(
+                title=ntfy_title,
+                text=ntfy_msg,
+                click=vac['url']
+            )
 
 
 if __name__ == '__main__':
