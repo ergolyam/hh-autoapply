@@ -7,6 +7,8 @@ from worker.api.get_resume import resume_request
 from worker.api.get_handbook import handbook_request
 from worker.funcs.vacancies import cycle_responses
 from worker.core.llm import init_llm
+from worker.db.db import init as init_db
+from worker.db.db import close as close_db
 
 async def main():
     argv = sys.argv[1:]
@@ -38,8 +40,14 @@ script.py --help [ experience, employment, schedule ] - display this message or 
             resumes = await resume_request()
             print(resumes)
         case [] | _ if not argv:
-            await init_llm()
-            await cycle_responses()
+            try:
+                await init_llm()
+                await init_db()
+                await cycle_responses()
+            except asyncio.CancelledError:
+                print('Task interrupted. Completion of work...')
+            finally:
+                await close_db()
         case _:
             print('Unknown command. Use --help')
 
