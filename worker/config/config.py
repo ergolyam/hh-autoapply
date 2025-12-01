@@ -11,6 +11,7 @@ class Config:
     retries: int = 10
     ntfy_url: str = 'https://ntfy.sh'
     ntfy_topic: str = 'ergolyam'
+    db_path: str = 'data.db'
 
     @classmethod
     def load_from_env(cls):
