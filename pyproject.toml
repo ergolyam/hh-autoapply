@@ -6,7 +6,7 @@ dependencies = []
 
 [project.optional-dependencies]
 oauth = [ "aiohttp" ]
-worker = [ "PyYAML", "httpx", "pydantic_ai" ]
+worker = [ "PyYAML", "httpx", "pydantic_ai", "tortoise-orm" ]
 
 [tool.pyright]
 venvPath = '.'
