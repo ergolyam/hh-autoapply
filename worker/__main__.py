@@ -1,55 +1,22 @@
 import os, sys, asyncio
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from worker.core.helpers import Common
+from worker.core.browser import init_browser
+from worker.funcs.login import prepare_page
+from worker.funcs.get_info import get_user
 
-from worker.api.get_resume import resume_request
-from worker.api.get_handbook import handbook_request
-from worker.funcs.vacancies import cycle_responses
-from worker.core.llm import init_llm
-from worker.db.db import init as init_db
-from worker.db.db import close as close_db
 
 async def main():
-    argv = sys.argv[1:]
-    match argv:
-        case ['--help', topic]:
-            print(await handbook_request(topic))
-        case ['--help']:
-            print('''Usage:
-script.py --resume <index> - display all resumes or set the active resume by index
-script.py --help [ experience, employment, schedule ] - display this message or help on the topic
-            ''')
-        case ['--resume', idx]:
-            resumes = await resume_request()
-            try:
-                idx = int(idx)
-            except ValueError:
-                print(f'Invalid index: {idx}')
-                return
-            value = resumes.get(idx)
-            if not value:
-                print(f'Resume with index {idx} not found')
-                return
-            assert value
-            value_id = value.get('resume_id')
-            Common.cfg['settings']['resume_id'] = value_id
-            Common.cfg.save()
-            print(f'Set resume id: {value_id}')
-        case ['--resume']:
-            resumes = await resume_request()
-            print(resumes)
-        case [] | _ if not argv:
-            try:
-                await init_llm()
-                await init_db()
-                await cycle_responses()
-            except asyncio.CancelledError:
-                print('Task interrupted. Completion of work...')
-            finally:
-                await close_db()
-        case _:
-            print('Unknown command. Use --help')
+    try:
+        browser, page, playwright = await init_browser()
+        print('Browser launched successfully')
+        await prepare_page(page)
+        await get_user(page)
+        await browser.close()
+        await playwright.stop()
+    except Exception as e:
+        print(f'An error occurred: {e}')
+
 
 if __name__ == '__main__':
     asyncio.run(main())

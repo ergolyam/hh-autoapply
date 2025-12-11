@@ -2,12 +2,6 @@
 name = "hh-autoapply"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = []
-
-[project.optional-dependencies]
-oauth = [ "aiohttp" ]
-worker = [ "PyYAML", "httpx", "pydantic_ai", "tortoise-orm" ]
-
-[tool.pyright]
-venvPath = '.'
-venv = '.venv'
+dependencies = [
+    "playwright>=1.57.0",
+]

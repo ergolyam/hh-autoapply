@@ -1,10 +1,9 @@
 import os
 
 class Config:
-    config_path: str = './config.yaml'
-    app_name: str = 'HeadLarga'
-    app_email: str = 'HeadLarga@ergolyam.top'
-    hh_api_domain: str = 'api.hh.ru'
+    chrome_path: str = '/bin/chromium'
+    hh_domain: str = 'hh.ru'
+    email: str = 'example@domain.com'
     model_name: str = ''
     api_key: list = []
     openai_base_url: str = ''
