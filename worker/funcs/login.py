@@ -32,6 +32,9 @@ async def prepare_page(page):
 
     await take_screenshot(page, '/tmp/test.jpg')
 
+    await page.context.storage_state(path=Config.state_path)
+    print(f'Auth state saved to: {Config.state_path}')
+
 
 if __name__ == '__main__':
     raise RuntimeError('This module should be run only via main.py')

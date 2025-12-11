@@ -5,8 +5,7 @@ from worker.config.config import Config
 async def init_browser():
     playwright = await async_playwright().start()
     browser = await playwright.chromium.launch(executable_path=Config.chrome_path)
-    page = await browser.new_page()
-    return browser, page, playwright
+    return browser, playwright
 
 
 if __name__ == '__main__':
