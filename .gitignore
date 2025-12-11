@@ -4,6 +4,6 @@ __pycache__/
 
 *.db
 
-*.yaml
+*.env
 
-*.env*
+*.json
