@@ -3,9 +3,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from worker.core.browser import init_browser
 from worker.core.helpers import take_screenshot
-from worker.funcs.login import prepare_page
-from worker.funcs.get_info import get_user
-from worker.funcs.get_vacancies import get_vacancies
+from worker.scrap.login import prepare_page
+from worker.scrap.get_info import get_user
+from worker.scrap.get_vacancies import get_vacancies
 from worker.config.config import Config
 
 
