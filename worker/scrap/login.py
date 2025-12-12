@@ -27,7 +27,7 @@ async def prepare_page(page, state_file):
         await captcha_locator.fill(capcha_text)
         await page.locator('button:has-text("Отправить")').click()
 
-    code = input('Code: ')
+    code = input('Enter the code from email: ')
 
     await page.locator('[data-qa="applicant-login-input-otp"]').fill(code)
 
