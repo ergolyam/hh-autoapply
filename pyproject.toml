@@ -5,3 +5,7 @@ requires-python = ">=3.12"
 dependencies = [
     "playwright>=1.57.0",
 ]
+
+[tool.pyright]
+venvPath = '.'
+venv = '.venv'
