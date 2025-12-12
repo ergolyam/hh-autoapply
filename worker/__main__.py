@@ -4,6 +4,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from worker.core.browser import init_browser
 from worker.funcs.login import prepare_page
 from worker.funcs.get_info import get_user
+from worker.funcs.get_vacancies import get_vacancies
 from worker.config.config import Config
 
 
@@ -15,6 +16,8 @@ async def main():
             context = await browser.new_context(storage_state=Config.state_path)
             page = await context.new_page()
             await get_user(page)
+            vacancies = await get_vacancies(page, search_text='devops', page_index=0)
+            print(vacancies)
         else:
             context = await browser.new_context()
             page = await context.new_page()
