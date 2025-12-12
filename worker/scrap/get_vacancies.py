@@ -1,3 +1,4 @@
+from urllib.parse import urlparse
 from worker.config.config import Config
 
 
@@ -30,8 +31,11 @@ async def get_vacancies(page, search_text: str, page_index: int = 0):
         if link and link.startswith('/'):
             link = f'https://{Config.hh_domain}{link}'
 
+        vacancy_id = urlparse(link).path.strip("/").split("/")[-1]
+
         if title and link:
             vacancies.append({
+                'id': vacancy_id,
                 'title': title,
                 'link': link,
             })
