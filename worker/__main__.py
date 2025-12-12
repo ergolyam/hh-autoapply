@@ -1,4 +1,4 @@
-import os, sys, asyncio
+import os, sys, asyncio, random
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from worker.core.browser import init_browser
@@ -6,6 +6,7 @@ from worker.api.ntfy_img import send_notify_image
 from worker.scrap.login import prepare_page
 from worker.scrap.get_info import get_user
 from worker.scrap.get_vacancies import get_vacancies
+from worker.scrap.get_vacancy import get_vacancy
 from worker.config.config import Config
 
 
@@ -22,7 +23,8 @@ async def main():
             page = await context.new_page()
             await get_user(page)
             vacancies = await get_vacancies(page, search_text='devops', page_index=0)
-            print(vacancies)
+            vacancy = await get_vacancy(page, random.choice(vacancies)['link'])
+            print(vacancy)
         else:
             context = await browser.new_context()
             page = await context.new_page()
@@ -31,7 +33,7 @@ async def main():
         msg = f'An error occurred: {e}'
         print(msg)
         assert page
-        await send_notify_image(page, filename='error.png', message=msg)
+        await send_notify_image(page, filename='error.png', title='Playwright error')
     finally:
         assert browser
         await browser.close()
