@@ -2,6 +2,7 @@ import os, sys, asyncio
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from worker.core.browser import init_browser
+from worker.core.helpers import take_screenshot
 from worker.funcs.login import prepare_page
 from worker.funcs.get_info import get_user
 from worker.funcs.get_vacancies import get_vacancies
@@ -9,6 +10,9 @@ from worker.config.config import Config
 
 
 async def main():
+    browser = None
+    playwright = None
+    page = None
     try:
         browser, playwright = await init_browser()
         print('Browser launched successfully')
@@ -22,10 +26,16 @@ async def main():
             context = await browser.new_context()
             page = await context.new_page()
             await prepare_page(page)
-        await browser.close()
-        await playwright.stop()
     except Exception as e:
         print(f'An error occurred: {e}')
+        assert page
+        await take_screenshot(page, '/tmp/test.jpg')
+    finally:
+        assert browser
+        await browser.close()
+        assert playwright
+        await playwright.stop()
+
 
 
 if __name__ == '__main__':
