@@ -30,8 +30,6 @@ async def prepare_page(page):
 
     await page.locator('[data-qa="applicant-login-input-otp"]').fill(code)
 
-    await take_screenshot(page, '/tmp/test.jpg')
-
     await page.context.storage_state(path=Config.state_path)
     print(f'Auth state saved to: {Config.state_path}')
 
