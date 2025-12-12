@@ -1,5 +1,5 @@
-from worker.core.helpers import take_screenshot
 from worker.config.config import Config
+from worker.api.ntfy_img import send_notify_image
 
 
 async def prepare_page(page):
@@ -20,8 +20,9 @@ async def prepare_page(page):
     captcha_locator = page.locator('[data-qa="account-captcha-input"]')
 
     if await captcha_locator.is_visible():
-        print('Capcha is detect!')
-        await take_screenshot(page, '/tmp/test.jpg')
+        msg = 'Capcha is detect!'
+        print(msg)
+        await send_notify_image(page, filename='capcha.png', title=msg, message='Please prove you are not a robot.')
         capcha_text = input('Enter the text from the image: ')
         await captcha_locator.fill(capcha_text)
         await page.locator('button:has-text("Отправить")').click()

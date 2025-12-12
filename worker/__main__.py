@@ -2,7 +2,7 @@ import os, sys, asyncio
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from worker.core.browser import init_browser
-from worker.core.helpers import take_screenshot
+from worker.api.ntfy_img import send_notify_image
 from worker.scrap.login import prepare_page
 from worker.scrap.get_info import get_user
 from worker.scrap.get_vacancies import get_vacancies
@@ -27,15 +27,15 @@ async def main():
             page = await context.new_page()
             await prepare_page(page)
     except Exception as e:
-        print(f'An error occurred: {e}')
+        msg = f'An error occurred: {e}'
+        print(msg)
         assert page
-        await take_screenshot(page, '/tmp/test.jpg')
+        await send_notify_image(page, filename='error.png', message=msg)
     finally:
         assert browser
         await browser.close()
         assert playwright
         await playwright.stop()
-
 
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
 from worker.config.config import Config
+from worker.api.ntfy_img import send_notify_image
 
 
 async def get_user(page):
@@ -11,6 +12,8 @@ async def get_user(page):
     name = (await name_locator.inner_text() or '').strip()
 
     print(f'Name on the resume page: {name}')
+
+    await send_notify_image(page, title='Resumes page')
 
 
 if __name__ == '__main__':
