@@ -2,7 +2,7 @@ from worker.config.config import Config
 from worker.api.ntfy_img import send_notify_image
 
 
-async def prepare_page(page):
+async def prepare_page(page, state_file):
     print(f'Navigating to {Config.hh_domain}...')
     await page.goto(f'https://{Config.hh_domain}', wait_until='load')
 
@@ -31,8 +31,8 @@ async def prepare_page(page):
 
     await page.locator('[data-qa="applicant-login-input-otp"]').fill(code)
 
-    await page.context.storage_state(path=Config.state_path)
-    print(f'Auth state saved to: {Config.state_path}')
+    await page.context.storage_state(path=state_file)
+    print(f'Auth state saved to: {state_file}')
 
 
 if __name__ == '__main__':

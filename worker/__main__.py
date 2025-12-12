@@ -16,8 +16,9 @@ async def main():
     try:
         browser, playwright = await init_browser()
         print('Browser launched successfully')
-        if os.path.exists(Config.state_path):
-            context = await browser.new_context(storage_state=Config.state_path)
+        state_file = f'{Config.state_path}/{Config.email}.json'
+        if os.path.exists(state_file):
+            context = await browser.new_context(storage_state=state_file)
             page = await context.new_page()
             await get_user(page)
             vacancies = await get_vacancies(page, search_text='devops', page_index=0)
@@ -25,7 +26,7 @@ async def main():
         else:
             context = await browser.new_context()
             page = await context.new_page()
-            await prepare_page(page)
+            await prepare_page(page, state_file)
     except Exception as e:
         msg = f'An error occurred: {e}'
         print(msg)

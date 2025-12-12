@@ -2,7 +2,7 @@ import os
 
 class Config:
     chrome_path: str = '/bin/chromium'
-    state_path: str = 'state.json'
+    state_path: str = './'
     hh_domain: str = 'hh.ru'
     email: str = 'example@domain.com'
     model_name: str = ''
