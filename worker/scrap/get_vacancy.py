@@ -16,7 +16,11 @@ async def get_vacancy(page, url):
 
     schedule = await page.locator('[data-qa="work-schedule-by-days-text"]').inner_text()
 
-    work_format = await page.locator('[data-qa="work-formats-text"]').inner_text()
+    work_format = page.locator('[data-qa="work-formats-text"]')
+    if await work_format.count() > 0:
+        work_format = await work_format.inner_text()
+    else:
+        work_format = ''
 
     salary = page.locator('[data-qa="vacancy-salary"]')
     if await salary.count() > 0:
@@ -26,6 +30,8 @@ async def get_vacancy(page, url):
 
     description = await page.locator('[data-qa="vacancy-description"]').inner_text()
 
+    skills = await page.locator('[data-qa="skills-element"] div').all_inner_texts()
+
     return {
         'name': title,
         'experience': experience,
@@ -33,7 +39,8 @@ async def get_vacancy(page, url):
         'schedule': schedule,
         'work_format': clean_text(work_format),
         'salary': clean_text(salary),
-        'description': description
+        'description': description,
+        'skills': clean_text(', '.join(skills))
     }
 
 
