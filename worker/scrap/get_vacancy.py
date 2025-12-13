@@ -4,7 +4,7 @@ def clean_text(text: str) -> str:
     return re.sub(r'\s+', ' ', text).strip()
 
 
-async def get_vacancy(page, url):
+async def get_vacancy(page, url) -> dict:
     print(f'Navigating to {url}...')
     await page.goto(url, wait_until='load')
 

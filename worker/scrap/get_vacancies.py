@@ -2,7 +2,7 @@ from urllib.parse import urlparse
 from worker.config.config import Config
 
 
-async def get_vacancies(page, search_text: str, page_index: int = 0):
+async def get_vacancies(page, search_text: str, page_index: int = 0) -> dict:
     url = (
         f'https://{Config.hh_domain}/search/vacancy'
         f'?text={search_text}&page={page_index}'
@@ -11,12 +11,15 @@ async def get_vacancies(page, search_text: str, page_index: int = 0):
     response = await page.goto(url, wait_until='load')
     if response and response.status == 404:
         print(f'Page {page_index} does not exist ({response.status})')
-        return []
-
-    vacancies = []
+        return {}
 
     vacancy_links = page.locator('a[data-qa="serp-item__title"]')
     count = await vacancy_links.count()
+
+    vacancies = {
+        'count': count,
+        'index': []
+    }
 
     print(f'Found {count} vacancies on page {page_index}')
 
@@ -34,7 +37,7 @@ async def get_vacancies(page, search_text: str, page_index: int = 0):
         vacancy_id = urlparse(link).path.strip("/").split("/")[-1]
 
         if title and link:
-            vacancies.append({
+            vacancies['index'].append({
                 'id': vacancy_id,
                 'title': title,
                 'link': link,

@@ -53,18 +53,18 @@ async def cycle_responses(page):
     bot = VacancyBot()
     bot.set_filter_phrase(Config.filter_phrase)
 
-    await send_notify(text='Responses have started!')
-
     page_index = 0
     while True:
-        vacancies = await get_vacancies(page, page_index=page_index, search_text=Config.search_text)
-        if not vacancies:
+        vacancies_data = await get_vacancies(page, page_index=page_index, search_text=Config.search_text)
+        count = vacancies_data.get('count')
+        if not count:
             msg = f'All pages are clicked through.'
             await send_notify(text=msg)
             print(msg)
             break
 
-        await send_notify(title='Page', text=str(page_index))
+        vacancies = vacancies_data['index']
+        await send_notify(title=f'Page {page_index}', text=f'Found {count} vacancies.')
         
         for vac in vacancies[1:]:
             await process_vacancy(page, vac, bot)
