@@ -1,7 +1,8 @@
 from worker.config.config import Config
 from worker.scrap.get_vacancies import get_vacancies
 from worker.scrap.get_vacancy import get_vacancy
-from worker.funcs.chatbot import VacancyBot
+from worker.scrap.post_vacancy import post_vacancy
+from worker.funcs.chatbot import VacancyBot, selection
 from worker.api.ntfy_msg import send_notify
 from worker.db.vacancies import add_vac, get_vac
 
@@ -33,6 +34,9 @@ async def process_vacancy(page, vac, bot):
     await bot.run_bot(bot_msg)
     result = bot.show_agent_result()
     selection = bot.show_selection()
+    if selection:
+        print('Response to vacancy...')
+        await post_vacancy(page)
 
     await add_vac(vac_id=vid, status=selection, cause=result)
     print(f'Saved {vid} to DB (Status: {selection})')
