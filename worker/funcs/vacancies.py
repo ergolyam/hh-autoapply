@@ -2,7 +2,7 @@ from worker.config.config import Config
 from worker.scrap.get_vacancies import get_vacancies
 from worker.scrap.get_vacancy import get_vacancy
 from worker.scrap.post_vacancy import post_vacancy
-from worker.funcs.chatbot import VacancyBot, selection
+from worker.funcs.chatbot import VacancyBot
 from worker.api.ntfy_msg import send_notify
 from worker.db.vacancies import add_vac, get_vac
 
