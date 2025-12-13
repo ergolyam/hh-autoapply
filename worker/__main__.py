@@ -1,5 +1,6 @@
 import os, sys, asyncio
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from pathlib import Path
 
 from worker.core.browser import init_browser
 from worker.api.ntfy_img import send_notify_image
@@ -21,10 +22,10 @@ async def main():
         browser, playwright = await init_browser()
         print('Browser launched successfully')
         state_file = f'{Config.state_path}/{Config.email}.json'
-        if os.path.exists(state_file):
+        Path(Config.state_path).mkdir(parents=True, exist_ok=True)
+        if Path(state_file).exists():
             context = await browser.new_context(storage_state=state_file)
             page = await context.new_page()
-            await get_user(page)
             await init_llm()
             await init_db()
             db_initialized = True
@@ -33,6 +34,7 @@ async def main():
             context = await browser.new_context()
             page = await context.new_page()
             await prepare_page(page, state_file)
+            await get_user(page)
     except asyncio.CancelledError:
         print('Task interrupted. Completion of work...')
         raise
