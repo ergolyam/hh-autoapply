@@ -8,7 +8,7 @@ async def get_vacancies(page, search_text: str, page_index: int = 0) -> dict:
         f'?text={search_text}&page={page_index}'
     )
     print(f'Navigating to {url}...')
-    response = await page.goto(url, wait_until='load')
+    response = await page.goto(url)
     if response and response.status == 404:
         print(f'Page {page_index} does not exist ({response.status})')
         return {}

@@ -4,10 +4,9 @@ from worker.api.ntfy_img import send_notify_image
 
 async def prepare_page(page, state_file):
     print(f'Navigating to {Config.hh_domain}...')
-    await page.goto(f'https://{Config.hh_domain}', wait_until='load')
+    await page.goto(f'https://{Config.hh_domain}')
 
-    async with page.expect_navigation(wait_until='load'):
-        await page.locator('[data-qa="login"]').click()
+    await page.locator('[data-qa="login"]').click()
 
     await page.locator('[data-qa="submit-button"]').click()
 

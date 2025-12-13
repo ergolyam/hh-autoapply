@@ -6,7 +6,7 @@ def clean_text(text: str) -> str:
 
 async def get_vacancy(page, url) -> dict:
     print(f'Navigating to {url}...')
-    await page.goto(url, wait_until='load')
+    await page.goto(url)
 
     title = await page.locator('[data-qa="vacancy-title"]').inner_text()
 
