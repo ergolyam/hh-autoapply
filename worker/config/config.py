@@ -2,7 +2,7 @@ import os
 
 class Config:
     chrome_path: str = '/bin/chromium'
-    state_path: str = './'
+    state_path: str = './sessions'
     hh_domain: str = 'hh.ru'
     email: str = 'example@domain.com'
     search_text: str = 'Python Developer'
