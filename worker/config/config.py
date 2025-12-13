@@ -11,6 +11,7 @@ class Config:
     openai_base_url: str = ''
     retries: int = 10
     filter_phrase: str = 'Accept job offers related to Python development.'
+    letter_input: str = 'Hello, I am ready to apply for your job!'
     ntfy_url: str = 'https://ntfy.sh'
     ntfy_topic: str = 'ergolyam'
     db_path: str = 'data.db'
