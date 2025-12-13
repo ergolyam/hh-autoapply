@@ -5,7 +5,7 @@ async def post_vacancy(page) -> bool:
     await page.locator('div.vacancy-actions [data-qa="vacancy-response-link-top"]').first.click()
 
     try:
-        await page.locator('[data-qa="relocation-warning-confirm"]').wait_for(state='visible', timeout=3000).click()
+        await page.locator('[data-qa="relocation-warning-confirm"]').click(timeout=3000)
     except:
         pass
 
