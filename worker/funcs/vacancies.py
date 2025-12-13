@@ -4,13 +4,14 @@ from worker.scrap.get_vacancy import get_vacancy
 from worker.scrap.post_vacancy import post_vacancy
 from worker.funcs.chatbot import VacancyBot
 from worker.api.ntfy_msg import send_notify
+from worker.api.ntfy_img import send_notify_image
 from worker.db.vacancies import add_vac, get_vac
 
 
 async def process_vacancy(page, vac, bot):
     vid = vac['id']
     vurl = vac['link']
-    
+
     existing = await get_vac(vid)
     if existing['status'] is not None:
         print(f'Vacancy {vid} already in DB. Skipping.')
@@ -34,23 +35,33 @@ async def process_vacancy(page, vac, bot):
     await bot.run_bot(bot_msg)
     result = bot.show_agent_result()
     selection = bot.show_selection()
-    if selection:
-        print('Response to vacancy...')
-        await post_vacancy(page)
-
-    await add_vac(vac_id=vid, status=selection, cause=result)
-    print(f'Saved {vid} to DB (Status: {selection})')
-
     ntfy_title = f'[{vid}]: {vac_info['name']}'
     ntfy_msg = f'''
     llm selected: {selection}
     llm commented: {result}
     '''
-    await send_notify(
-        title=ntfy_title,
-        text=ntfy_msg,
-        click=vac['link']
-    )
+
+    access = True
+    if selection:
+        print('Response to vacancy...')
+        access = await post_vacancy(page)
+    if not access:
+        await send_notify_image(
+            page,
+            filename='not_access.png',
+            title=ntfy_title,
+            message='Unable to respond to the vacancy.',
+            click=vac['link']
+        )
+    else:
+        await send_notify(
+            title=ntfy_title,
+            text=ntfy_msg,
+            click=vac['link']
+        )
+
+    await add_vac(vac_id=vid, status=selection, cause=result)
+    print(f'Saved {vid} to DB (Status: {selection})')
 
 
 async def cycle_responses(page):
