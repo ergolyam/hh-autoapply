@@ -35,14 +35,8 @@ class VacancyBot:
         ]
 
     async def run_bot(self, msg: str):
-        for attempt, _ in enumerate(Config.api_key, start=1):
-            try:
-                result = await Common.agent.run(msg, message_history=self.system_prompt)
-                self.agent_result = result.output
-            except Exception as e:
-                print(f'An error occurred during attempt {attempt}.')
-                if attempt == len(Config.api_key):
-                    raise Exception(f'All attempts failed: {e}')
+            result = await Common.agent.run(msg, message_history=self.system_prompt)
+            self.agent_result = result.output
 
     def show_selection(self) -> bool:
         print(f'Selection call: {agent_selection}')

@@ -7,7 +7,7 @@ class Config:
     email: str = 'example@domain.com'
     search_text: str = 'Python Developer'
     model_name: str = ''
-    api_key: list = []
+    api_key: str = ''
     openai_base_url: str = ''
     retries: int = 10
     filter_phrase: str = 'Accept job offers related to Python development.'

@@ -1,10 +1,7 @@
 import pydantic_ai
 from typing import Any, Literal, cast
-from worker.core.helpers import (
-    Common,
-    RotatingGeminiKeyClient,
-    RotatingOpenAIKeyClient
-)
+from worker.core.helpers import Common
+
 from worker.config.config import Config
 from worker.funcs.chatbot import selection
 
@@ -16,10 +13,7 @@ async def init_llm():
     if not Config.openai_base_url:
         Common.model = Common.gemini_model(
             model_name=Config.model_name,
-            provider=Common.gemini_provider(
-                api_key='dummy',
-                http_client=RotatingGeminiKeyClient(Config.api_key, min_interval=4.2)
-            ),
+            provider=Common.gemini_provider(api_key=Config.api_key)
         )
         categories = (
             'HARM_CATEGORY_SEXUALLY_EXPLICIT',
@@ -51,9 +45,8 @@ async def init_llm():
         Common.model = Common.openai_model(
             model_name=Config.model_name,
             provider=Common.openai_provider(
-                api_key='dummy',
-                base_url=Config.openai_base_url,
-                http_client=RotatingOpenAIKeyClient(Config.api_key)
+                api_key=Config.api_key,
+                base_url=Config.openai_base_url
             ),
         )
     Common.agent = pydantic_ai.Agent(
