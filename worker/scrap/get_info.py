@@ -8,6 +8,7 @@ async def get_user(page):
     await page.goto(url)
 
     name_locator = page.locator('[data-qa="cell-text-content"]').first
+    await name_locator.wait_for(state='visible', timeout=3000)
 
     name = (await name_locator.inner_text() or '').strip()
 
