@@ -2,7 +2,7 @@ from worker.config.config import Config
 from worker.api.ntfy_img import send_notify_image
 
 
-async def prepare_page(page, state_file):
+async def prepare_page(page):
     print(f'Navigating to {Config.hh_domain}...')
     await page.goto(f'https://{Config.hh_domain}')
 
@@ -29,9 +29,6 @@ async def prepare_page(page, state_file):
     code = input('Enter the code from email: ')
 
     await page.locator('[data-qa="applicant-login-input-otp"]').fill(code)
-
-    await page.context.storage_state(path=state_file)
-    print(f'Auth state saved to: {state_file}')
 
 
 if __name__ == '__main__':

@@ -29,11 +29,14 @@ async def main():
             await init_llm()
             await init_db()
             db_initialized = True
+            await get_user(page)
             await cycle_responses(page)
         else:
             context = await browser.new_context()
             page = await context.new_page()
-            await prepare_page(page, state_file)
+            await prepare_page(page)
+            await context.storage_state(path=state_file)
+            print(f'Auth state saved to: {state_file}')
             await get_user(page)
     except asyncio.CancelledError:
         print('Task interrupted. Completion of work...')
