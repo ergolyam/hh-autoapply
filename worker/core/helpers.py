@@ -86,7 +86,7 @@ class Log():
         panel = Panel(
             Align.left(content),
             title=f'agent_selection = {selection}',
-            border_style='bright_magenta' if selection else 'red',
+            border_style='green1' if selection else 'red',
             padding=(1, 2),
             width=90,
         )
