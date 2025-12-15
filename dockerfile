@@ -29,9 +29,7 @@ ENV PYTHONUNBUFFERED=1
 
 ENV CHROME_PATH="/usr/bin/chromium"
 
-ENV DB_PATH="/app/data/hh-autoapply.db"
-
-ENV STATE_PATH="/app/data/"
+ENV DATA_PATH="/app/data/"
 
 CMD ["python", "worker"]
 
