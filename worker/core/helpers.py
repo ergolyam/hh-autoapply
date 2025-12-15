@@ -1,4 +1,6 @@
 import httpx, io, logging
+from contextvars import ContextVar
+from contextlib import contextmanager
 
 import pydantic_ai.models.openai
 import pydantic_ai.providers.openai
@@ -35,7 +37,18 @@ class Common():
     openrouter_provider = pydantic_ai.providers.openrouter.OpenRouterProvider
 
 
+_vacancy_id_var: ContextVar[str] = ContextVar('vacancy_id', default='')
+
+class _VacancyContextFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        vid = _vacancy_id_var.get()
+        record.vacancy_id = vid
+        record.vacancy_prefix = f'[{vid}] ' if vid else ''
+        return True
+
+
 class Log():
+    console = Console()
     logging.basicConfig(
         level='INFO',
         format='%(message)s',
@@ -43,8 +56,28 @@ class Log():
         handlers=[RichHandler(rich_tracebacks=True)]
     )
     log = logging.getLogger('rich')
+    log.setLevel(logging.INFO)
+    log.propagate = False
+
+    _handler = RichHandler(rich_tracebacks=True)
+    _handler.addFilter(_VacancyContextFilter())
+    _handler.setFormatter(logging.Formatter('%(vacancy_prefix)s%(message)s', datefmt='[%X]'))
+
+    if not log.handlers:
+        log.addHandler(_handler)
+
     logging.getLogger('httpx').setLevel(logging.WARNING)
-    console = Console()
+
+    @classmethod
+    @contextmanager
+    def vacancy(cls, vid: str, *, rule: bool = True):
+        token = _vacancy_id_var.set(str(vid))
+        try:
+            if rule:
+                cls.console.rule(f'[bold cyan]Vacancy {vid}[/bold cyan]')
+            yield
+        finally:
+            _vacancy_id_var.reset(token)
 
     @classmethod
     def agent_panel(cls, selection: bool, text: str):

@@ -13,58 +13,58 @@ async def process_vacancy(page, vac, bot):
     vid = vac['id']
     vurl = vac['link']
 
-    existing = await get_vac(vid)
-    if existing['status'] is not None:
-        Log.log.warning(f'Vacancy {vid} already in DB. Skipping.')
-        return
+    with Log.vacancy(vid):
+        existing = await get_vac(vid)
+        if existing['status'] is not None:
+            Log.log.warning(f'Vacancy already in DB. Skipping.')
+            return
 
-    Log.log.info(f'Processing {vid}...')
+        Log.log.info(f'Processing vacancy...')
+        vac_info = await get_vacancy(page, vurl)
+        
+        bot_msg = f'''
+        name: {vac_info['name']}\n
+        experience: {vac_info['experience']}\n
+        employment: {vac_info['employment']}\n
+        schedule: {vac_info['schedule']}\n
+        work_format: {vac_info['work_format']}\n
+        salary: {vac_info['salary']}\n
+        description: {vac_info['description']}\n
+        skills: {vac_info['skills']}
+        '''
+        
+        await bot.run_bot(bot_msg)
+        result = bot.show_agent_result()
+        selection = bot.show_selection()
+        ntfy_title = f'[{vid}]: {vac_info['name']}'
+        ntfy_msg = f'''
+        llm selected: {selection}
+        llm commented: {result}
+        '''
 
-    vac_info = await get_vacancy(page, vurl)
-    
-    bot_msg = f'''
-    name: {vac_info['name']}\n
-    experience: {vac_info['experience']}\n
-    employment: {vac_info['employment']}\n
-    schedule: {vac_info['schedule']}\n
-    work_format: {vac_info['work_format']}\n
-    salary: {vac_info['salary']}\n
-    description: {vac_info['description']}\n
-    skills: {vac_info['skills']}
-    '''
-    
-    await bot.run_bot(bot_msg)
-    result = bot.show_agent_result()
-    selection = bot.show_selection()
-    ntfy_title = f'[{vid}]: {vac_info['name']}'
-    ntfy_msg = f'''
-    llm selected: {selection}
-    llm commented: {result}
-    '''
+        access = True
+        if selection:
+            Log.log.info('Response to vacancy...')
+            access = await post_vacancy(page)
+        if not access:
+            ntfy_msg = 'Unable to respond to the vacancy.'
+            Log.log.error(ntfy_msg)
+            await send_notify_image(
+                page,
+                filename='not_access.png',
+                title=ntfy_title,
+                message=ntfy_msg,
+                click=vurl
+            )
+        else:
+            await send_notify(
+                title=ntfy_title,
+                text=ntfy_msg,
+                click=vurl
+            )
 
-    access = True
-    if selection:
-        Log.log.info('Response to vacancy...')
-        access = await post_vacancy(page)
-    if not access:
-        ntfy_msg = 'Unable to respond to the vacancy.'
-        Log.log.error(ntfy_msg)
-        await send_notify_image(
-            page,
-            filename='not_access.png',
-            title=ntfy_title,
-            message=ntfy_msg,
-            click=vac['link']
-        )
-    else:
-        await send_notify(
-            title=ntfy_title,
-            text=ntfy_msg,
-            click=vac['link']
-        )
-
-    await add_vac(vac_id=vid, status=selection, cause=result)
-    Log.log.info(f'Saved {vid} to DB (Status: {selection})')
+        await add_vac(vac_id=vid, status=selection, cause=result)
+        Log.log.info(f'Saved vacancy to DB (Status: {selection})')
 
 
 async def cycle_responses(page):
