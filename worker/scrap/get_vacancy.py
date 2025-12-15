@@ -13,9 +13,13 @@ async def get_vacancy(page, url) -> dict:
 
     experience = await page.locator('[data-qa="vacancy-experience"]').inner_text()
 
-    employment = await page.locator('[data-qa="common-employment-text"]').inner_text()
+    employment = await page.locator('[data-qa="common-employment-text"], [data-qa="vacancy-view-employment-mode"]').inner_text()
 
-    schedule = await page.locator('[data-qa="work-schedule-by-days-text"]').inner_text()
+    schedule = page.locator('[data-qa="work-schedule-by-days-text"]')
+    if await schedule.count() > 0:
+        schedule = await schedule.inner_text()
+    else:
+        schedule = ''
 
     work_format = page.locator('[data-qa="work-formats-text"]')
     if await work_format.count() > 0:
