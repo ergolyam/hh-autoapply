@@ -8,9 +8,7 @@ from worker.funcs.chatbot import selection
 
 
 async def init_llm():
-    agent_kwargs: dict[str, Any] = {
-        'retries': settings.retries,
-    }
+    agent_kwargs: dict[str, Any] = {}
     if ('gemini' in settings.model_name or 'google' in settings.model_name):
         Common.model = Common.gemini_model(
             model_name=settings.model_name,
