@@ -35,8 +35,10 @@ class VacancyBot:
         ]
 
     async def run_bot(self, msg: str):
-            result = await Common.agent.run(msg, message_history=self.system_prompt)
-            self.agent_result = result.output
+        global agent_selection
+        agent_selection = False
+        result = await Common.agent.run(msg, message_history=self.system_prompt)
+        self.agent_result = result.output
 
     def show_selection(self) -> bool:
         return agent_selection
