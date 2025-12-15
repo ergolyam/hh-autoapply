@@ -1,9 +1,10 @@
 from worker.config.config import settings
+from worker.core.helpers import Log
 from worker.api.ntfy_img import send_notify_image
 
 
 async def prepare_page(page):
-    print(f'Navigating to {settings.hh_domain}...')
+    Log.log.info(f'Navigating to {settings.hh_domain}')
     await page.goto(f'https://{settings.hh_domain}')
 
     await page.locator('[data-qa="login"]').click()
@@ -20,13 +21,13 @@ async def prepare_page(page):
 
     if await captcha_locator.is_visible():
         msg = 'Capcha is detect!'
-        print(msg)
+        Log.log.warning(msg)
         await send_notify_image(page, filename='capcha.png', title=msg, message='Please prove you are not a robot.')
-        capcha_text = input('Enter the text from the image: ')
+        capcha_text = Log.console.input('[bright_red]Enter the text from the image:[/] ')
         await captcha_locator.fill(capcha_text)
         await page.locator('button:has-text("Отправить")').click()
 
-    code = input('Enter the code from email: ')
+    code = Log.console.input('[green3]Enter the code from email:[/] ')
 
     await page.locator('[data-qa="applicant-login-input-otp"]').fill(code)
 

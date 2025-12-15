@@ -1,16 +1,18 @@
-from urllib.parse import urlparse
+from urllib.parse import urlparse, quote_plus
 from worker.config.config import settings
+from worker.core.helpers import Log
 
 
 async def get_vacancies(page, search_text: str, page_index: int = 0) -> dict:
+    search = quote_plus(search_text)
     url = (
         f'https://{settings.hh_domain}/search/vacancy'
-        f'?text={search_text}&page={page_index}'
+        f'?text={search}&page={page_index}'
     )
-    print(f'Navigating to {url}...')
+    Log.log.info(f'Navigating to {url}')
     response = await page.goto(url)
     if response and response.status == 404:
-        print(f'Page {page_index} does not exist ({response.status})')
+        Log.log.warning(f'Page {page_index} does not exist ({response.status})')
         return {}
 
     vacancy_links = page.locator('a[data-qa="serp-item__title"]')
@@ -21,7 +23,7 @@ async def get_vacancies(page, search_text: str, page_index: int = 0) -> dict:
         'index': []
     }
 
-    print(f'Found {count} vacancies on page {page_index}')
+    Log.log.info(f'Found {count} vacancies on page {page_index}')
 
     for i in range(count):
         vacancy_link = vacancy_links.nth(i)

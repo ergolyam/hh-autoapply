@@ -1,11 +1,12 @@
 import re
+from worker.core.helpers import Log
 
 def clean_text(text: str) -> str:
     return re.sub(r'\s+', ' ', text).strip()
 
 
 async def get_vacancy(page, url) -> dict:
-    print(f'Navigating to {url}...')
+    Log.log.info(f'Navigating to {url}')
     await page.goto(url)
 
     title = await page.locator('[data-qa="vacancy-title"]').inner_text()

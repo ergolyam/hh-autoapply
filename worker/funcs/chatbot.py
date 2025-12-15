@@ -1,9 +1,9 @@
-from worker.core.helpers import Common
-from worker.config.config import settings
 from pydantic_ai.messages import (
     ModelRequest,
     SystemPromptPart
 )
+
+from worker.core.helpers import Common, Log
 
 agent_selection = bool()
 
@@ -39,11 +39,13 @@ class VacancyBot:
             self.agent_result = result.output
 
     def show_selection(self) -> bool:
-        print(f'Selection call: {agent_selection}')
         return agent_selection
 
     def show_agent_result(self) -> str:
-        print(f'Agent result: {self.agent_result}')
+        Log.agent_panel(
+            selection=agent_selection,
+            text=self.agent_result
+        )
         return self.agent_result
 
 

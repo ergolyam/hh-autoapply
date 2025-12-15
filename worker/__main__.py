@@ -11,6 +11,7 @@ from worker.core.llm import init_llm
 from worker.db.db import init as init_db
 from worker.db.db import close as close_db
 from worker.config.config import settings
+from worker.core.helpers import Log
 
 
 async def main():
@@ -20,7 +21,7 @@ async def main():
     page = None
     try:
         browser, playwright = await init_browser()
-        print('Browser launched successfully')
+        Log.log.info('Browser launched successfully')
         state_file = f'{settings.state_path}/{settings.email}.json'
         Path(settings.state_path).mkdir(parents=True, exist_ok=True)
         if Path(state_file).exists():
@@ -36,18 +37,13 @@ async def main():
             page = await context.new_page()
             await prepare_page(page)
             await context.storage_state(path=state_file)
-            print(f'Auth state saved to: {state_file}')
+            Log.log.info(f'Auth state saved to: {state_file}')
             await get_user(page)
-    except asyncio.CancelledError:
-        print('Task interrupted. Completion of work...')
-        raise
-    except Exception as e:
-        msg = f'An error occurred: {e}'
-        print(msg)
+    except Exception:
+        Log.log.exception(f'An error occurred')
         if page:
             await send_notify_image(page, filename='error.png', title='Playwright error')
     finally:
-        await asyncio.sleep(0)
         if context:
             try:
                 await context.close()
@@ -66,4 +62,7 @@ async def main():
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        Log.log.info('Interrupted by user. Bye!')

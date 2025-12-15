@@ -1,4 +1,5 @@
 from worker.config.config import settings
+from worker.core.helpers import Log
 from worker.scrap.get_vacancies import get_vacancies
 from worker.scrap.get_vacancy import get_vacancy
 from worker.scrap.post_vacancy import post_vacancy
@@ -14,10 +15,10 @@ async def process_vacancy(page, vac, bot):
 
     existing = await get_vac(vid)
     if existing['status'] is not None:
-        print(f'Vacancy {vid} already in DB. Skipping.')
+        Log.log.warning(f'Vacancy {vid} already in DB. Skipping.')
         return
 
-    print(f'Processing {vid}...')
+    Log.log.info(f'Processing {vid}...')
 
     vac_info = await get_vacancy(page, vurl)
     
@@ -43,14 +44,16 @@ async def process_vacancy(page, vac, bot):
 
     access = True
     if selection:
-        print('Response to vacancy...')
+        Log.log.info('Response to vacancy...')
         access = await post_vacancy(page)
     if not access:
+        ntfy_msg = 'Unable to respond to the vacancy.'
+        Log.log.error(ntfy_msg)
         await send_notify_image(
             page,
             filename='not_access.png',
             title=ntfy_title,
-            message='Unable to respond to the vacancy.',
+            message=ntfy_msg,
             click=vac['link']
         )
     else:
@@ -61,7 +64,7 @@ async def process_vacancy(page, vac, bot):
         )
 
     await add_vac(vac_id=vid, status=selection, cause=result)
-    print(f'Saved {vid} to DB (Status: {selection})')
+    Log.log.info(f'Saved {vid} to DB (Status: {selection})')
 
 
 async def cycle_responses(page):
@@ -75,7 +78,7 @@ async def cycle_responses(page):
         if not count:
             msg = f'All pages are clicked through.'
             await send_notify(text=msg)
-            print(msg)
+            Log.log.warning(msg)
             break
 
         vacancies = vacancies_data['index']
