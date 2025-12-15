@@ -17,7 +17,7 @@ async def post_vacancy(page) -> bool:
 
     await page.locator('[data-qa="textarea-native-wrapper"] textarea').fill(settings.letter_input)
 
-    await page.locator('[data-qa="vacancy-response-letter-submit"]').click()
+    await page.locator('[data-qa="vacancy-response-letter-submit"], [data-qa="vacancy-response-submit-popup"]').click()
 
     return True
 
