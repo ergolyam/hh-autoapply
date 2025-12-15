@@ -1,4 +1,4 @@
-from worker.config.config import Config
+from worker.config.config import settings
 
 
 async def post_vacancy(page) -> bool:
@@ -15,7 +15,7 @@ async def post_vacancy(page) -> bool:
     except:
         pass
 
-    await page.locator('[data-qa="textarea-native-wrapper"] textarea').fill(Config.letter_input)
+    await page.locator('[data-qa="textarea-native-wrapper"] textarea').fill(settings.letter_input)
 
     await page.locator('[data-qa="vacancy-response-letter-submit"]').click()
 

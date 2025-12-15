@@ -1,10 +1,10 @@
 from urllib.parse import urlparse
-from worker.config.config import Config
+from worker.config.config import settings
 
 
 async def get_vacancies(page, search_text: str, page_index: int = 0) -> dict:
     url = (
-        f'https://{Config.hh_domain}/search/vacancy'
+        f'https://{settings.hh_domain}/search/vacancy'
         f'?text={search_text}&page={page_index}'
     )
     print(f'Navigating to {url}...')
@@ -32,7 +32,7 @@ async def get_vacancies(page, search_text: str, page_index: int = 0) -> dict:
         link = await vacancy_link.get_attribute('href')
 
         if link and link.startswith('/'):
-            link = f'https://{Config.hh_domain}{link}'
+            link = f'https://{settings.hh_domain}{link}'
 
         vacancy_id = urlparse(link).path.strip("/").split("/")[-1]
 

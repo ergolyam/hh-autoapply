@@ -1,9 +1,9 @@
-from worker.config.config import Config
+from worker.config.config import settings
 from worker.api.ntfy_img import send_notify_image
 
 
 async def get_user(page):
-    url = f'https://{Config.hh_domain}/applicant/resumes'
+    url = f'https://{settings.hh_domain}/applicant/resumes'
     print(f'Navigating to {url}...')
     await page.goto(url)
 

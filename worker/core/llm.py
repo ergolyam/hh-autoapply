@@ -2,19 +2,19 @@ import pydantic_ai
 from typing import Any, Literal, cast
 from worker.core.helpers import Common
 
-from worker.config.config import Config
+from worker.config.config import settings
 from worker.funcs.chatbot import selection
 
 
 async def init_llm():
     agent_kwargs: dict[str, Any] = {
-        'retries': Config.retries,
+        'retries': settings.retries,
     }
-    if ('gemini' in Config.model_name or 'google' in Config.model_name):
+    if ('gemini' in settings.model_name or 'google' in settings.model_name):
         Common.model = Common.gemini_model(
-            model_name=Config.model_name,
+            model_name=settings.model_name,
             provider=Common.gemini_provider(
-                api_key=Config.api_key
+                api_key=settings.api_key
             )
         )
         categories = (
@@ -43,19 +43,19 @@ async def init_llm():
                 for cat in categories
             ]
         )
-    elif Config.openai_base_url:
+    elif settings.openai_base_url:
         Common.model = Common.openai_model(
-            model_name=Config.model_name,
+            model_name=settings.model_name,
             provider=Common.openai_provider(
-                api_key=Config.api_key,
-                base_url=Config.openai_base_url
+                api_key=settings.api_key,
+                base_url=settings.openai_base_url
             ),
         )
     else:
         Common.model = Common.openrouter_model(
-            model_name=Config.model_name,
+            model_name=settings.model_name,
             provider=Common.openrouter_provider(
-                api_key=Config.api_key,
+                api_key=settings.api_key,
             )
         )
     Common.agent = pydantic_ai.Agent(

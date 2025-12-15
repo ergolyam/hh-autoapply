@@ -1,10 +1,10 @@
-from worker.config.config import Config
+from worker.config.config import settings
 from tortoise import Tortoise
 
 
 async def init():
     await Tortoise.init(
-        db_url=f'sqlite://{Config.db_path}',
+        db_url=f'sqlite://{settings.db_path}',
         modules={'models': ['worker.db.models']}
     )
     await Tortoise.generate_schemas()

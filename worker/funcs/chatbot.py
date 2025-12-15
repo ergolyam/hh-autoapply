@@ -1,5 +1,5 @@
 from worker.core.helpers import Common
-from worker.config.config import Config
+from worker.config.config import settings
 from pydantic_ai.messages import (
     ModelRequest,
     SystemPromptPart

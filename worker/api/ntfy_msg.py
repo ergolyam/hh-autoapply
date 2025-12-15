@@ -1,5 +1,5 @@
 from worker.core.helpers import Common
-from worker.config.config import Config
+from worker.config.config import settings
 
 
 async def send_notify(
@@ -7,7 +7,7 @@ async def send_notify(
         title: str = '',
         click: str = ''
 ):
-    url = f'{Config.ntfy_url}/{Config.ntfy_topic}'
+    url = f'{settings.ntfy_url}/{settings.ntfy_topic}'
 
     kargs: dict = {
         'url': url,

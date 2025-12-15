@@ -1,4 +1,4 @@
-from worker.config.config import Config
+from worker.config.config import settings
 from worker.scrap.get_vacancies import get_vacancies
 from worker.scrap.get_vacancy import get_vacancy
 from worker.scrap.post_vacancy import post_vacancy
@@ -66,11 +66,11 @@ async def process_vacancy(page, vac, bot):
 
 async def cycle_responses(page):
     bot = VacancyBot()
-    bot.set_filter_phrase(Config.filter_phrase)
+    bot.set_filter_phrase(settings.filter_phrase)
 
     page_index = 0
     while True:
-        vacancies_data = await get_vacancies(page, page_index=page_index, search_text=Config.search_text)
+        vacancies_data = await get_vacancies(page, page_index=page_index, search_text=settings.search_text)
         count = vacancies_data.get('count')
         if not count:
             msg = f'All pages are clicked through.'

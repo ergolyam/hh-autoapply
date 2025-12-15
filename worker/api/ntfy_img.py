@@ -1,7 +1,7 @@
 import io
 
 from worker.core.helpers import Common, take_screenshot
-from worker.config.config import Config
+from worker.config.config import settings
 
 
 async def send_notify_image(
@@ -13,7 +13,7 @@ async def send_notify_image(
     content_type: str = 'image/png',
 ):
     image = await take_screenshot(page)
-    url = f'{Config.ntfy_url}/{Config.ntfy_topic}'
+    url = f'{settings.ntfy_url}/{settings.ntfy_topic}'
 
     if isinstance(image, io.BytesIO):
         image_bytes = image.getvalue()

@@ -10,7 +10,7 @@ from worker.funcs.vacancies import cycle_responses
 from worker.core.llm import init_llm
 from worker.db.db import init as init_db
 from worker.db.db import close as close_db
-from worker.config.config import Config
+from worker.config.config import settings
 
 
 async def main():
@@ -21,8 +21,8 @@ async def main():
     try:
         browser, playwright = await init_browser()
         print('Browser launched successfully')
-        state_file = f'{Config.state_path}/{Config.email}.json'
-        Path(Config.state_path).mkdir(parents=True, exist_ok=True)
+        state_file = f'{settings.state_path}/{settings.email}.json'
+        Path(settings.state_path).mkdir(parents=True, exist_ok=True)
         if Path(state_file).exists():
             context = await browser.new_context(storage_state=state_file)
             page = await context.new_page()
