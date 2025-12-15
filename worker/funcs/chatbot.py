@@ -4,6 +4,7 @@ from pydantic_ai.messages import (
 )
 
 from worker.core.helpers import Common, Log
+from worker.config.config import settings
 
 agent_selection = bool()
 
@@ -37,8 +38,15 @@ class VacancyBot:
     async def run_bot(self, msg: str):
         global agent_selection
         agent_selection = False
-        result = await Common.agent.run(msg, message_history=self.system_prompt)
-        self.agent_result = result.output
+        for attempt in range(1, settings.retries + 1):
+            try:
+                result = await Common.agent.run(msg, message_history=self.system_prompt)
+                self.agent_result = result.output
+                return
+            except:
+                Log.log.warning(f'An error occurred during attempt {attempt}.')
+                if attempt == settings.retries:
+                    raise
 
     def show_selection(self) -> bool:
         return agent_selection
