@@ -33,6 +33,7 @@ async def process_vacancy(page, vac, bot):
         skills: {vac_info['skills']}
         '''
         
+        Log.log.info(f'Processing with GPT Bot...')
         await bot.run_bot(bot_msg)
         result = bot.show_agent_result()
         selection = bot.show_selection()
