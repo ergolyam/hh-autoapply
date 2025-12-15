@@ -48,6 +48,7 @@ async def process_vacancy(page, vac, bot):
             access = await post_vacancy(page)
         if not access:
             ntfy_msg = 'Unable to respond to the vacancy.'
+            selection = False
             Log.log.error(ntfy_msg)
             await send_notify_image(
                 page,
