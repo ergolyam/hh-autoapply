@@ -33,7 +33,8 @@ async def get_vacancy(page, url) -> dict:
     else:
         salary = ''
 
-    description = await page.locator('[data-qa="vacancy-description"]').inner_text()
+    descriptions = await page.locator('[data-qa="vacancy-description"]').all_inner_texts()
+    description = ' '.join(descriptions)
 
     skills = await page.locator('[data-qa="skills-element"] div').all_inner_texts()
 
