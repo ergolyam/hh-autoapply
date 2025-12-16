@@ -34,6 +34,8 @@ async def get_vacancy(page, url) -> dict:
         salary = ''
 
     descriptions = await page.locator('[data-qa="vacancy-description"]').all_inner_texts()
+    if not descriptions:
+        raise ValueError('vacancy-description not found')
     description = ' '.join(descriptions)
 
     skills = await page.locator('[data-qa="skills-element"] div').all_inner_texts()
