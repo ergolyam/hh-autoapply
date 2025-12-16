@@ -5,7 +5,8 @@ from worker.config.config import settings
 async def send_notify(
         text: str,
         title: str = '',
-        click: str = ''
+        click: str = '',
+        priority = ''
 ):
     url = f'{settings.ntfy_url}/{settings.ntfy_topic}'
 
@@ -22,6 +23,9 @@ async def send_notify(
 
     if click:
         kargs['headers']['Click'] = click
+
+    if priority:
+        kargs['headers']['Priority'] = priority
 
     response = await Common.http.post(**kargs)
     if response.status_code == 200:

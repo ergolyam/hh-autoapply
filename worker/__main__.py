@@ -44,7 +44,7 @@ async def main():
     except Exception:
         Log.log.exception(f'An error occurred')
         if page:
-            await send_notify_image(page, filename='error.png', title='Playwright error')
+            await send_notify_image(page, filename='error.png', title='Playwright error', priority='max')
     finally:
         if context:
             try:

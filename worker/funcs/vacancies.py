@@ -56,7 +56,8 @@ async def process_vacancy(page, vac, bot):
                 filename='not_access.png',
                 title=ntfy_title,
                 message=ntfy_msg,
-                click=vurl
+                click=vurl,
+                priority='high'
             )
         else:
             await send_notify(

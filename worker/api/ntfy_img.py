@@ -11,6 +11,7 @@ async def send_notify_image(
     title: str = '',
     click: str = '',
     content_type: str = 'image/png',
+    priority = ''
 ):
     image = await take_screenshot(page)
     url = f'{settings.ntfy_url}/{settings.ntfy_topic}'
@@ -33,6 +34,9 @@ async def send_notify_image(
 
     if click:
         headers['Click'] = click
+
+    if priority:
+        headers['Priority'] = priority
 
     response = await Common.http.put(url=url, content=image_bytes, headers=headers)
     if response.status_code == 200:
