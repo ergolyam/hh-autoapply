@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     filter_phrase: str
     letter_input: str
     ntfy_url: str = 'https://ntfy.sh'
-    ntfy_topic: str = 'ergolyam'
+    ntfy_topic: str
 
     class Config:
         env_file = ".env"
