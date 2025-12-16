@@ -11,7 +11,7 @@ from worker.core.llm import init_llm
 from worker.db.db import init as init_db
 from worker.db.db import close as close_db
 from worker.config.config import settings
-from worker.core.helpers import Log
+from worker.core.helpers import Log, block_heavy_resources
 
 
 async def main():
@@ -26,6 +26,7 @@ async def main():
         Path(settings.state_path).mkdir(parents=True, exist_ok=True)
         if Path(state_file).exists():
             context = await browser.new_context(storage_state=state_file)
+            await block_heavy_resources(context)
             page = await context.new_page()
             await init_llm()
             await init_db()
@@ -34,6 +35,7 @@ async def main():
             await cycle_responses(page)
         else:
             context = await browser.new_context()
+            await block_heavy_resources(context)
             page = await context.new_page()
             await prepare_page(page)
             await context.storage_state(path=state_file)
