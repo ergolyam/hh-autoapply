@@ -65,7 +65,7 @@ async def process_vacancy(page, vac, bot):
                 click=vurl
             )
 
-        await add_vac(vac_id=vid, status=selection, cause=result)
+        await add_vac(vac_id=vid, status=selection)
         Log.log.info(f'Saved vacancy to DB (Status: {selection})')
 
 

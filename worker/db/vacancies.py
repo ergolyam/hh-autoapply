@@ -1,14 +1,11 @@
 from worker.db.models import Vacancy
 
 
-async def add_vac(vac_id: int, status: bool, cause: str = ''):
-    if status:
-        cause = ''
+async def add_vac(vac_id: int, status: bool):
     await Vacancy.update_or_create(
         id=vac_id,
         defaults={
-            'status': status,
-            'cause': cause
+            'status': status
         }
     )
 
@@ -16,11 +13,10 @@ async def add_vac(vac_id: int, status: bool, cause: str = ''):
 async def get_vac(vac_id: int) -> dict:
     vac = await Vacancy.get_or_none(id=vac_id)
     if not vac:
-        return {'status': None, 'cause': None}
+        return {'status': None}
     
     return {
-        'status': vac.status, 
-        'cause': vac.cause if vac.cause else None
+        'status': vac.status
     }
 
 
@@ -29,8 +25,7 @@ async def get_vacs() -> dict:
     result = {}
     for vac in vacs:
         result[vac.id] = {
-            'status': vac.status,
-            'cause': vac.cause
+            'status': vac.status
         }
     return result
 
