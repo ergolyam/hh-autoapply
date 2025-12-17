@@ -60,7 +60,7 @@ The following environment variables control the startup of the project:
 | `FILTER_PHRASE`   | *string*                                                    | System prompt / filtering rules for the LLM agent.                    |
 | `LETTER_INPUT`    | *string*                                                    | Text inserted into the response letter when applying.                 |
 | `MODEL_NAME`      | *string* (`openai:…`, `gemini:…`, `openrouter:…`, `groq:…`) | LLM provider + model in `provider:model` format.                      |
-| `API_KEY`         | *string*                                                    | API key for the selected LLM provider.                                |
+| `API_KEYS`        | *list*                                                      | API keys for the selected LLM provider.                                |
 | `OPENAI_BASE_URL` | *string*                                                    | Optional OpenAI-compatible base URL (default empty).                  |
 | `RETRIES`         | *integer*                                                   | Number of retries for LLM calls (default `10`).                       |
 | `DATA_PATH`       | *string*                                                    | Base data directory (default `data`).                                 |
