@@ -6,7 +6,7 @@ from worker.api.ntfy_img import send_notify_image
 async def get_user(page):
     url = f'https://{settings.hh_domain}/applicant/resumes'
     Log.log.info(f'Navigating to {url}')
-    await page.goto(url)
+    await page.goto(url, wait_until='domcontentloaded')
 
     name_locator = page.locator('[data-qa="cell-text-content"]').first
     await name_locator.wait_for(state='visible', timeout=3000)
