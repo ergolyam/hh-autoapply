@@ -29,14 +29,17 @@ class VacancyBot:
     async def run_bot(self, msg: str):
         Common.agent_selection = False
         for attempt in range(1, settings.retries + 1):
-            api_key = await self.key_rotator.next_key()
-            Log.log.info(f'Use api key: {api_key[-4:]}')
-            model = build_model_for_key(api_key)
+            model_kwargs = {}
+            if len(settings.api_keys) > 1:
+                api_key = await self.key_rotator.next_key()
+                Log.log.info(f'Use api key: {api_key[-4:]}')
+                model = build_model_for_key(api_key)
+                model_kwargs['model'] = model
             try:
                 result = await Common.agent.run(
                     msg,
-                    model=model,
-                    message_history=self.system_prompt
+                    message_history=self.system_prompt,
+                    **model_kwargs
                 )
                 self.agent_result = result.output
                 return
