@@ -1,4 +1,4 @@
-import httpx, io, logging
+import httpx, io, logging, asyncio, itertools
 from contextvars import ContextVar
 from contextlib import contextmanager
 
@@ -49,6 +49,27 @@ class Common():
     openrouter_provider = pydantic_ai.providers.openrouter.OpenRouterProvider
     groq_model = pydantic_ai.models.groq.GroqModel
     groq_provider = pydantic_ai.providers.groq.GroqProvider
+    agent_selection = False
+
+
+def selection(boolean: bool) -> bool:
+    '''
+    accept or reject the vacancy
+    example reject vacancy:
+    selection(bool(False))
+    '''
+    Common.agent_selection = boolean
+    return boolean
+
+
+class KeyRotator:
+    def __init__(self, keys: list[str]):
+        self._it = itertools.cycle(keys)
+        self._lock = asyncio.Lock()
+
+    async def next_key(self) -> str:
+        async with self._lock:
+            return next(self._it)
 
 
 _vacancy_id_var: ContextVar[str] = ContextVar('vacancy_id', default='')

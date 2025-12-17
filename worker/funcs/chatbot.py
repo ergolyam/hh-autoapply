@@ -3,20 +3,10 @@ from pydantic_ai.messages import (
     SystemPromptPart
 )
 
-from worker.core.helpers import Common, Log
+from worker.core.llm import build_model_for_key
+
+from worker.core.helpers import Common, Log, KeyRotator
 from worker.config.config import settings
-
-agent_selection = bool()
-
-def selection(boolean: bool) -> bool:
-    '''
-    accept or reject the vacancy
-    example reject vacancy:
-    selection(bool(False))
-    '''
-    global agent_selection
-    agent_selection = boolean
-    return boolean
 
 
 class VacancyBot:
@@ -24,6 +14,7 @@ class VacancyBot:
         self.agent_result = ''
         self.filter_phrase = ''
         self.system_prompt = []
+        self.key_rotator = KeyRotator(settings.api_keys)
 
     def set_filter_phrase(self, phrase):
         self.filter_phrase = phrase
@@ -36,24 +27,30 @@ class VacancyBot:
         ]
 
     async def run_bot(self, msg: str):
-        global agent_selection
-        agent_selection = False
+        Common.agent_selection = False
         for attempt in range(1, settings.retries + 1):
+            api_key = await self.key_rotator.next_key()
+            Log.log.info(f'Use api key: {api_key[-4:]}')
+            model = build_model_for_key(api_key)
             try:
-                result = await Common.agent.run(msg, message_history=self.system_prompt)
+                result = await Common.agent.run(
+                    msg,
+                    model=model,
+                    message_history=self.system_prompt
+                )
                 self.agent_result = result.output
                 return
-            except:
-                Log.log.warning(f'An error occurred during attempt {attempt}.')
+            except Exception as e:
+                Log.log.warning(f'An error occurred during attempt {attempt}.\n{e}')
                 if attempt == settings.retries:
                     raise
 
     def show_selection(self) -> bool:
-        return agent_selection
+        return Common.agent_selection
 
     def show_agent_result(self) -> str:
         Log.agent_panel(
-            selection=agent_selection,
+            selection=Common.agent_selection,
             text=self.agent_result
         )
         return self.agent_result

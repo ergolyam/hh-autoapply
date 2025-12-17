@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     hh_domain: str = 'hh.ru'
     email: str
     model_name: str
-    api_key: str
+    api_keys: list
     openai_base_url: str = ''
     retries: int = 10
     search_text: str
