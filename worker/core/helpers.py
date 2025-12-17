@@ -25,16 +25,6 @@ async def take_screenshot(page, *, full_page: bool = False, img_type: str = 'png
     return io.BytesIO(data)
 
 
-async def block_heavy_resources(context):
-    async def _route(route):
-        r = route.request
-        if r.resource_type in ("image", "media", "font"):
-            await route.abort()
-        else:
-            await route.continue_()
-    await context.route("**/*", _route)
-
-
 class Common():
     client_timeout = httpx.Timeout(30.0)
     http = httpx.AsyncClient(timeout=client_timeout)
