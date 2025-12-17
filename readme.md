@@ -25,7 +25,7 @@ python -m venv .venv
     # Required
     EMAIL="you@example.com"
     MODEL_NAME="openai:gpt-4o-mini"   # provider:model (see MODEL_NAME notes below)
-    API_KEY="your_llm_api_key"
+    API_KEYS="['key1', 'key2']"
     SEARCH_TEXT="python developer"
     FILTER_PHRASE="System prompt / rules for selecting vacancies"
     LETTER_INPUT="Your cover letter text"
