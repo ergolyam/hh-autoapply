@@ -3,8 +3,6 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     data_path: str = 'data'
     chrome_path: str = '/bin/chrome'
-    state_path: str = f'{data_path}/sessions'
-    db_path: str = f'{data_path}/data.db'
     hh_domain: str = 'hh.ru'
     email: str
     model_name: str
@@ -17,6 +15,14 @@ class Settings(BaseSettings):
     ntfy_url: str = 'https://ntfy.sh'
     ntfy_topic: str
 
+    @property
+    def state_path(self) -> str:
+        return f'{self.data_path}/sessions'
+
+    @property
+    def db_path(self) -> str:
+        return f'{self.data_path}/data.db'
+    
     class Config:
         env_file = ".env"
         
