@@ -39,8 +39,8 @@ async def process_vacancy(page, vac, bot):
         selection = bot.show_selection()
         ntfy_title = f'[{vid}]: {vac_info['name']}'
         ntfy_msg = f'''
-        llm selected: {selection}
-        llm commented: {result}
+llm selected: {selection}
+llm commented: {result}
         '''
 
         access = True
