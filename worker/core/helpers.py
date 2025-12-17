@@ -9,6 +9,8 @@ import pydantic_ai.models.google
 import pydantic_ai.providers.google
 import pydantic_ai.models.openrouter
 import pydantic_ai.providers.openrouter
+import pydantic_ai.models.groq
+import pydantic_ai.providers.groq
 
 from rich.console import Console
 from rich.panel import Panel
@@ -45,6 +47,8 @@ class Common():
     gemini_provider = pydantic_ai.providers.google.GoogleProvider
     openrouter_model = pydantic_ai.models.openrouter.OpenRouterModel
     openrouter_provider = pydantic_ai.providers.openrouter.OpenRouterProvider
+    groq_model = pydantic_ai.models.groq.GroqModel
+    groq_provider = pydantic_ai.providers.groq.GroqProvider
 
 
 _vacancy_id_var: ContextVar[str] = ContextVar('vacancy_id', default='')
