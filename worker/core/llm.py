@@ -34,6 +34,11 @@ def build_model_for_key(api_key: str):
                 model_name=model_name,
                 provider=Common.groq_provider(api_key=api_key),
             )
+        case 'cerebras':
+            model = Common.cerebras_model(
+                model_name=model_name,
+                provider=Common.cerebras_provider(api_key=api_key),
+            )
         case _:
             raise ValueError(f'Unknown provider: {provider}')
     model_cache[api_key] = model

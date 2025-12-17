@@ -11,6 +11,8 @@ import pydantic_ai.models.openrouter
 import pydantic_ai.providers.openrouter
 import pydantic_ai.models.groq
 import pydantic_ai.providers.groq
+import pydantic_ai.models.cerebras
+import pydantic_ai.providers.cerebras
 
 from rich.console import Console
 from rich.panel import Panel
@@ -49,6 +51,8 @@ class Common():
     openrouter_provider = pydantic_ai.providers.openrouter.OpenRouterProvider
     groq_model = pydantic_ai.models.groq.GroqModel
     groq_provider = pydantic_ai.providers.groq.GroqProvider
+    cerebras_model = pydantic_ai.models.cerebras.CerebrasModel
+    cerebras_provider = pydantic_ai.providers.cerebras.CerebrasProvider
     agent_selection = False
 
 
