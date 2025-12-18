@@ -1,4 +1,4 @@
-import os, sys, asyncio
+import os, sys, asyncio, signal, contextlib
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from pathlib import Path
 
@@ -19,6 +19,22 @@ async def main():
     playwright = None
     db_initialized = False
     page = None
+    cycle_task = None
+
+    loop = asyncio.get_running_loop()
+    stop = loop.create_future()
+
+    def _request_shutdown(signame: str):
+        Log.log.info(f"Got {signame}. Shutting down...")
+        if not stop.done():
+            stop.set_result(None)
+
+    for sig in (signal.SIGINT, signal.SIGTERM):
+        try:
+            loop.add_signal_handler(sig, _request_shutdown, sig.name)
+        except NotImplementedError:
+            signal.signal(sig, lambda *_: _request_shutdown(sig.name))
+
     try:
         browser, playwright = await init_browser()
         Log.log.info('Browser launched successfully')
@@ -31,7 +47,18 @@ async def main():
             await init_db()
             db_initialized = True
             await get_user(page)
-            await cycle_responses(page)
+            cycle_task = asyncio.create_task(cycle_responses(page), name="cycle_responses")
+            done, pending = await asyncio.wait(
+                {cycle_task, stop},
+                return_when=asyncio.FIRST_COMPLETED
+            )
+            if cycle_task.done():
+                await cycle_task
+            elif stop.done():
+                Log.log.info("Cancelling responses...")
+                cycle_task.cancel()
+                with contextlib.suppress(asyncio.CancelledError):
+                    await cycle_task
         else:
             context = await browser.new_context()
             page = await context.new_page()
@@ -44,6 +71,10 @@ async def main():
         if page:
             await send_notify_image(page, filename='error.png', title='Playwright error', priority='max')
     finally:
+        if cycle_task and not cycle_task.done():
+            cycle_task.cancel()
+            with contextlib.suppress(asyncio.CancelledError):
+                await cycle_task
         if context:
             try:
                 await context.close()
@@ -62,7 +93,4 @@ async def main():
 
 
 if __name__ == '__main__':
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        Log.log.info('Interrupted by user. Bye!')
+    asyncio.run(main())
