@@ -1,5 +1,6 @@
 import re
 from worker.core.helpers import Log
+from worker.core.browser import optional_inner_text
 
 def clean_text(text: str) -> str:
     return re.sub(r'\s+', ' ', text).strip()
@@ -15,23 +16,11 @@ async def get_vacancy(page, url) -> dict:
 
     employment = await page.locator('[data-qa="common-employment-text"], [data-qa="vacancy-view-employment-mode"]').inner_text()
 
-    schedule = page.locator('[data-qa="work-schedule-by-days-text"]')
-    if await schedule.count() > 0:
-        schedule = await schedule.inner_text()
-    else:
-        schedule = ''
+    schedule = await optional_inner_text(page.locator('[data-qa="work-schedule-by-days-text"]'))
 
-    work_format = page.locator('[data-qa="work-formats-text"]')
-    if await work_format.count() > 0:
-        work_format = await work_format.inner_text()
-    else:
-        work_format = ''
+    work_format = await optional_inner_text(page.locator('[data-qa="work-formats-text"]'))
 
-    salary = page.locator('[data-qa="vacancy-salary"]')
-    if await salary.count() > 0:
-        salary = await salary.inner_text()
-    else:
-        salary = ''
+    salary = await optional_inner_text(page.locator('[data-qa="vacancy-salary"]'))
 
     descriptions = await page.locator('[data-qa="vacancy-description"]').all_inner_texts()
     if not descriptions:
@@ -44,10 +33,10 @@ async def get_vacancy(page, url) -> dict:
         'name': title,
         'experience': experience,
         'employment': employment,
-        'schedule': schedule,
+        'schedule': clean_text(schedule),
         'work_format': clean_text(work_format),
         'salary': clean_text(salary),
-        'description': description,
+        'description': clean_text(description),
         'skills': clean_text(', '.join(skills))
     }
 
