@@ -36,7 +36,7 @@ async def get_vacancy(page, url) -> dict:
         'schedule': clean_text(schedule),
         'work_format': clean_text(work_format),
         'salary': clean_text(salary),
-        'description': clean_text(description),
+        'description': description.replace('\xa0', ' ').strip(),
         'skills': clean_text(', '.join(skills))
     }
 
