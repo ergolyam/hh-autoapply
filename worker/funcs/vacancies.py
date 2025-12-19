@@ -21,9 +21,9 @@ async def process_vacancy(page, vac, bot):
 
         Log.log.info(f'Processing vacancy...')
         bot_msg = f'''
-        name: {vac['name']}\n
-        description: {vac['description']}\n
-        salary: {vac['salary']}\n
+name: {vac['name']}\n
+description: {vac['description']}\n
+salary: {vac['salary']}\n
         '''
         
         Log.log.info(f'Processing with GPT Bot...')
