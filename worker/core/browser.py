@@ -9,7 +9,7 @@ async def init_browser():
     return browser, playwright
 
 
-async def optional_inner_text(locator, default='', timeout=1500):
+async def optional_inner_text(locator, default='', timeout=3000):
     try:
         await locator.wait_for(state='visible', timeout=timeout)
         return (await locator.inner_text())
