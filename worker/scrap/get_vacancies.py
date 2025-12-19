@@ -23,8 +23,6 @@ async def get_vacancies(page, search_text: str, page_index: int = 0) -> dict:
         'index': []
     }
 
-    Log.log.info(f'Found {count} vacancies on page {page_index}')
-
     for i in range(count):
         vacancy_link = vacancy_links.nth(i)
 
