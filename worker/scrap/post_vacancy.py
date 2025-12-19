@@ -1,8 +1,16 @@
+from worker.core.helpers import Log
 from worker.config.config import settings
 
 
-async def post_vacancy(page) -> bool:
-    await page.locator('div.vacancy-actions [data-qa="vacancy-response-link-top"]').first.click()
+async def post_vacancy(page, url = None) -> bool:
+    if url:
+        Log.log.info(f'Navigating to {url}')
+        await page.goto(url, wait_until='domcontentloaded')
+
+    try:
+        await page.locator('div.vacancy-actions [data-qa="vacancy-response-link-top"]').first.click()
+    except:
+        return False
 
     try:
         await page.locator('[data-qa="relocation-warning-confirm"]').click(timeout=3000)
