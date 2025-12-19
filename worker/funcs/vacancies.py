@@ -1,7 +1,7 @@
+import asyncio, time
 from worker.config.config import settings
-from worker.core.helpers import Log
-from worker.scrap.get_vacancies import get_vacancies
-from worker.scrap.get_vacancy import get_vacancy
+from worker.core.helpers import Common, Log
+from worker.api.get_vacancies import vacancies_request
 from worker.scrap.post_vacancy import post_vacancy
 from worker.funcs.chatbot import VacancyBot
 from worker.api.ntfy_msg import send_notify
@@ -20,24 +20,17 @@ async def process_vacancy(page, vac, bot):
             return
 
         Log.log.info(f'Processing vacancy...')
-        vac_info = await get_vacancy(page, vurl)
-        
         bot_msg = f'''
-        name: {vac_info['name']}\n
-        experience: {vac_info['experience']}\n
-        employment: {vac_info['employment']}\n
-        schedule: {vac_info['schedule']}\n
-        work_format: {vac_info['work_format']}\n
-        salary: {vac_info['salary']}\n
-        description: {vac_info['description']}\n
-        skills: {vac_info['skills']}
+        name: {vac['name']}\n
+        description: {vac['description']}\n
+        salary: {vac['salary']}\n
         '''
         
         Log.log.info(f'Processing with GPT Bot...')
         await bot.run_bot(bot_msg)
         result = bot.show_agent_result()
         selection = bot.show_selection()
-        ntfy_title = f'[{vid}]: {vac_info['name']}'
+        ntfy_title = f'[{vid}]: {vac['name']}'
         ntfy_msg = f'''
 llm selected: {selection}
 llm commented: {result}
@@ -46,7 +39,13 @@ llm commented: {result}
         access = True
         if selection:
             Log.log.info('Response to vacancy...')
-            access = await post_vacancy(page)
+            now = time.monotonic()
+            wait = Common.post_delay - (now - Common.last_post_time)
+            if wait > 0:
+                Log.log.info(f'Sleep {wait}...')
+                await asyncio.sleep(wait)
+            access = await post_vacancy(page, url=vurl)
+            Common.last_post_time = time.monotonic()
         if not access:
             ntfy_msg = 'Unable to respond to the vacancy.'
             selection = False
@@ -76,15 +75,15 @@ async def cycle_responses(page):
 
     page_index = 0
     while True:
-        vacancies_data = await get_vacancies(page, page_index=page_index, search_text=settings.search_text)
-        count = vacancies_data.get('count')
+        vacancies = await vacancies_request(page=page_index)
+        count = len(vacancies)
         if not count:
             msg = f'All pages are clicked through.'
             await send_notify(text=msg)
             Log.log.warning(msg)
             break
 
-        vacancies = vacancies_data['index']
+        Log.log.info(f'Found {count} vacancies on page {page_index}')
         await send_notify(title=f'Page {page_index}', text=f'Found {count} vacancies.')
         
         for vac in vacancies[1:]:
