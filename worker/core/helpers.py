@@ -44,6 +44,8 @@ class Common():
     cerebras_model = pydantic_ai.models.cerebras.CerebrasModel
     cerebras_provider = pydantic_ai.providers.cerebras.CerebrasProvider
     agent_selection = False
+    last_post_time = 0.0
+    post_delay = 10
 
 
 def selection(boolean: bool) -> bool:
