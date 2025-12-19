@@ -30,9 +30,9 @@ async def vacancies_request(page: int = 0):
             info = await vacancy_detals(vid)
             vacancy = {
                 'id': vid,
-                'name': item.get('name'),
-                'link': item.get('alternate_url'),
-                'description': info.get('description'),
+                'name': item['name'],
+                'link': item['alternate_url'],
+                'description': info['description'],
                 'salary': f'{salary.get('from') if salary else 0} {salary.get('currency') if salary else 'Null'}'
             }
             vacancies.append(vacancy)
