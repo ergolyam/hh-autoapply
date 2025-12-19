@@ -12,14 +12,6 @@ async def get_vacancy(page, url) -> dict:
 
     title = await page.locator('[data-qa="vacancy-title"]').inner_text()
 
-    experience = await page.locator('[data-qa="vacancy-experience"]').inner_text()
-
-    employment = await page.locator('[data-qa="common-employment-text"], [data-qa="vacancy-view-employment-mode"]').inner_text()
-
-    schedule = await optional_inner_text(page.locator('[data-qa="work-schedule-by-days-text"]'))
-
-    work_format = await optional_inner_text(page.locator('[data-qa="work-formats-text"]'))
-
     salary = await optional_inner_text(page.locator('[data-qa="vacancy-salary"]'))
 
     descriptions = await page.locator('[data-qa="vacancy-description"]').all_inner_texts()
@@ -27,17 +19,10 @@ async def get_vacancy(page, url) -> dict:
         raise ValueError('vacancy-description not found')
     description = ' '.join(descriptions)
 
-    skills = await page.locator('[data-qa="skills-element"] div').all_inner_texts()
-
     return {
         'name': title,
-        'experience': experience,
-        'employment': employment,
-        'schedule': clean_text(schedule),
-        'work_format': clean_text(work_format),
-        'salary': clean_text(salary),
         'description': description.replace('\xa0', ' ').strip(),
-        'skills': clean_text(', '.join(skills))
+        'salary': clean_text(salary),
     }
 
 

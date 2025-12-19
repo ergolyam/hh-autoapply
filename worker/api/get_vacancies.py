@@ -24,12 +24,6 @@ async def vacancies_request(page: int = 0):
         data = resp.get('data', {})
         items = data.get('items', {})
         vacancies = []
-        vacancies.append(
-            {
-                'pages': data.get('pages'),
-                'total': data.get('found')
-            }
-        )
         for item in items:
             salary = item.get('salary', {})
             vid = item.get('id')
@@ -37,12 +31,7 @@ async def vacancies_request(page: int = 0):
             vacancy = {
                 'id': vid,
                 'name': item.get('name'),
-                'url': item.get('alternate_url'),
-                'experience': info.get('experience', {}).get('name'),
-                'employment': info.get('employment', {}).get('name'),
-                'schedule': info.get('schedule', {}).get('name'),
-                'work_format': ', '.join(wf['name'] for wf in info.get('work_format', [])),
-                'skills': ', '.join(skill['name'] for skill in info.get('key_skills', [])),
+                'link': item.get('alternate_url'),
                 'description': info.get('description'),
                 'salary': f'{salary.get('from') if salary else 0} {salary.get('currency') if salary else 'Null'}'
             }
