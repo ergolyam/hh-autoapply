@@ -1,7 +1,7 @@
 import asyncio, time
 from worker.config.config import settings
 from worker.core.helpers import Common, Log
-from worker.api.get_vacancies import vacancies_request
+from worker.api.get_vacancies import vacancies_request, vacancy_detals
 from worker.scrap.post_vacancy import post_vacancy
 from worker.funcs.chatbot import VacancyBot
 from worker.api.ntfy_msg import send_notify
@@ -20,9 +20,10 @@ async def process_vacancy(page, vac, bot):
             return
 
         Log.log.info(f'Processing vacancy...')
+        vac_info = await vacancy_detals(vid)
         bot_msg = f'''
 name: {vac['name']}\n
-description: {vac['description']}\n
+description: {vac_info['description']}\n
 salary: {vac['salary']}\n
         '''
         
