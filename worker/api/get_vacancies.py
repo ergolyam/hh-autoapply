@@ -12,7 +12,7 @@ async def vacancy_detals(id: int):
         raise Exception(f'Error {resp.get('status_code', None)}: {resp.get('details', None)}')
 
 
-async def vacancies_request(page: int = 0):
+async def vacancies_request(page: int = 0) -> dict:
     params = {
         'page': page,
         'per_page': 50,
@@ -31,7 +31,11 @@ async def vacancies_request(page: int = 0):
                 v for v in items
                 if str((v.get('employer') or {}).get('id')) not in blocked
             ]
-        vacancies = []
+        vacancies = {
+            'pages': data.get('pages'),
+            'total': data.get('found'),
+            'items': []
+        }
         for item in items:
             salary = item.get('salary', {})
             vid = item.get('id')
@@ -42,7 +46,7 @@ async def vacancies_request(page: int = 0):
                 'link': item['alternate_url'],
                 'salary': f'{salary.get('from') if salary else 0} {salary.get('currency') if salary else 'Null'}'
             }
-            vacancies.append(vacancy)
+            vacancies['items'].append(vacancy)
         return vacancies
     else:
         raise Exception(f'Error {resp.get('status_code', None)}: {resp.get('details', None)}')

@@ -31,7 +31,7 @@ salary: {vac['salary']}\n
         await bot.run_bot(bot_msg)
         result = bot.show_agent_result()
         selection = bot.show_selection()
-        emoji_str = {"✅" if selection else "❌"}
+        emoji_str = {'✅' if selection else '❌'}
         ntfy_title = f'({emoji_str})[{vid}]: {vac['name']}'
         ntfy_msg = f'''
 llm selected: {selection} {emoji_str}
@@ -72,7 +72,8 @@ async def cycle_responses(page):
 
     page_index = 0
     while True:
-        vacancies = await vacancies_request(page=page_index)
+        vacancies_data = await vacancies_request(page=page_index)
+        vacancies = vacancies_data['items']
         count = len(vacancies)
         if not count:
             msg = f'All pages are clicked through.'
@@ -82,8 +83,8 @@ async def cycle_responses(page):
 
         Log.log.info(f'Found {count} vacancies on page {page_index}')
         await send_notify(
-            title=f'Page {page_index}',
-            text=(f'Found {count} vacancies.\nSearch Index: {settings.search_text}')
+            title=f'Page {page_index}/{vacancies_data['pages']}',
+            text=(f'Found {count}/{vacancies_data['total']} vacancies.\nSearch Index: {settings.search_text}')
         )
         
         for vac in vacancies:
