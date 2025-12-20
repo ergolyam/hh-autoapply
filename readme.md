@@ -37,8 +37,6 @@ python -m venv .venv
     OPENAI_BASE_URL=""
     RETRIES=10
     DATA_PATH="data"
-    DB_PATH="data/data.db"
-    STATE_PATH="data/sessions"
     CHROME_PATH="/bin/chrome"
     EMPLOYER_BLOCK="['id1', 'id2']"
     ```
@@ -66,8 +64,6 @@ The following environment variables control the startup of the project:
 | `OPENAI_BASE_URL` | *string*                                                    | Optional OpenAI-compatible base URL (default empty).                  |
 | `RETRIES`         | *integer*                                                   | Number of retries for LLM calls (default `10`).                       |
 | `DATA_PATH`       | *string*                                                    | Base data directory (default `data`).                                 |
-| `STATE_PATH`      | *string*                                                    | Playwright storage state directory (default `data/sessions`).         |
-| `DB_PATH`         | *string*                                                    | SQLite DB path (default `data/data.db`).                              |
 | `CHROME_PATH`     | *string*                                                    | Path to Chrome/Chromium executable (default `/bin/chrome`).           |
 | `NTFY_URL`        | *URL*                                                       | ntfy base URL (default `https://ntfy.sh`).                            |
 | `NTFY_TOPIC`      | *string*                                                    | ntfy topic name used for notifications.                               |
