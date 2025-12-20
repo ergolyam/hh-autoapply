@@ -7,6 +7,9 @@ async def post_vacancy(page, url = None) -> bool:
         Log.log.info(f'Navigating to {url}')
         await page.goto(url, wait_until='domcontentloaded')
 
+        title = await page.locator('[data-qa="vacancy-title"]').inner_text()
+        Log.log.info(f'Vacancy: {title}')
+
     try:
         await page.locator('div.vacancy-actions [data-qa="vacancy-response-link-top"]').first.click()
     except:
