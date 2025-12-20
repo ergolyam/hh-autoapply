@@ -81,7 +81,7 @@ async def cycle_responses(page):
             Log.log.warning(msg)
             break
 
-        Log.log.info(f'Found {count} vacancies on page {page_index}')
+        Log.log.info(f'Found {count}/{vacancies_data['pages']} vacancies on page {page_index}/{vacancies_data['total']}')
         await send_notify(
             title=f'Page {page_index}/{vacancies_data['pages']}',
             text=(f'Found {count}/{vacancies_data['total']} vacancies.\nSearch Index: {settings.search_text}')
