@@ -38,8 +38,8 @@ async def main():
     try:
         browser, playwright = await init_browser()
         Log.log.info('Browser launched successfully')
-        state_file = f'{settings.state_path}/{settings.email}.json'
-        Path(settings.state_path).mkdir(parents=True, exist_ok=True)
+        state_file = f'{settings.data_path}/{settings.email}.json'
+        Path(settings.data_path).mkdir(parents=True, exist_ok=True)
         if Path(state_file).exists():
             context = await browser.new_context(storage_state=state_file)
             page = await context.new_page()
