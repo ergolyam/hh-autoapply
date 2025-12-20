@@ -6,6 +6,7 @@ from worker.core.browser import init_browser
 from worker.api.ntfy_img import send_notify_image
 from worker.scrap.login import prepare_page
 from worker.scrap.get_info import get_user
+from worker.scrap.get_negotiations import get_negotiations
 from worker.funcs.vacancies import cycle_responses
 from worker.core.llm import init_llm
 from worker.db.db import init as init_db
@@ -25,7 +26,7 @@ async def main():
     stop = loop.create_future()
 
     def _request_shutdown(signame: str):
-        Log.log.info(f"Got {signame}. Shutting down...")
+        Log.log.info(f'Got {signame}. Shutting down...')
         if not stop.done():
             stop.set_result(None)
 
@@ -47,7 +48,11 @@ async def main():
             await init_db()
             db_initialized = True
             await get_user(page)
-            cycle_task = asyncio.create_task(cycle_responses(page), name="cycle_responses")
+            if '--recovery' in sys.argv:
+                from worker.funcs.negotiations import cycle_negotiations
+                cycle_task = asyncio.create_task(cycle_negotiations(page), name='cycle_negotiations')
+            else: 
+                cycle_task = asyncio.create_task(cycle_responses(page), name='cycle_responses')
             done, pending = await asyncio.wait(
                 {cycle_task, stop},
                 return_when=asyncio.FIRST_COMPLETED
@@ -55,7 +60,7 @@ async def main():
             if cycle_task.done():
                 await cycle_task
             elif stop.done():
-                Log.log.info("Cancelling responses...")
+                Log.log.info('Cancelling responses...')
                 cycle_task.cancel()
                 with contextlib.suppress(asyncio.CancelledError):
                     await cycle_task
