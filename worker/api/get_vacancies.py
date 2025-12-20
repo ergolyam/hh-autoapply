@@ -24,13 +24,20 @@ async def vacancies_request(page: int = 0):
     )
     if resp.get('ok', False):
         data = resp.get('data', {})
-        items = data.get('items', {})
+        items = data.get('items', [])
+        blocked = set(map(str, settings.employer_block))
+        if blocked:
+            items = [
+                v for v in items
+                if str(v.get('employer', {}).get('id')) not in blocked
+            ]
         vacancies = []
         for item in items:
             salary = item.get('salary', {})
             vid = item.get('id')
             vacancy = {
                 'id': vid,
+                'employer_id': item['employer']['id'],
                 'name': item['name'],
                 'link': item['alternate_url'],
                 'salary': f'{salary.get('from') if salary else 0} {salary.get('currency') if salary else 'Null'}'

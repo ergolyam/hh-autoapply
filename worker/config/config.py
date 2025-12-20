@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     search_text: str
     filter_phrase: str
     letter_input: str
+    employer_block: list = []
     ntfy_url: str = 'https://ntfy.sh'
     ntfy_topic: str
 
