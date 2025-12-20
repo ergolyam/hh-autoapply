@@ -31,9 +31,10 @@ salary: {vac['salary']}\n
         await bot.run_bot(bot_msg)
         result = bot.show_agent_result()
         selection = bot.show_selection()
-        ntfy_title = f'[{vid}]: {vac['name']}'
+        emoji_str = {"✅" if selection else "❌"}
+        ntfy_title = f'({emoji_str})[{vid}]: {vac['name']}'
         ntfy_msg = f'''
-llm selected: {selection} {"✅" if selection else "❌"}
+llm selected: {selection} {emoji_str}
 llm commented: {result}
         '''
 
