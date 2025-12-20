@@ -40,6 +40,7 @@ python -m venv .venv
     DB_PATH="data/data.db"
     STATE_PATH="data/sessions"
     CHROME_PATH="/bin/chrome"
+    EMPLOYER_BLOCK="['id1', 'id2']"
     ```
 
 - Run:
@@ -60,7 +61,8 @@ The following environment variables control the startup of the project:
 | `FILTER_PHRASE`   | *string*                                                    | System prompt / filtering rules for the LLM agent.                    |
 | `LETTER_INPUT`    | *string*                                                    | Text inserted into the response letter when applying.                 |
 | `MODEL_NAME`      | *string* (`openai:...`, `gemini:...`, `openrouter:...`, `groq:...`, `cerebras:...`) | LLM provider + model in `provider:model` format.                      |
-| `API_KEYS`        | *list* (`"['key1', 'key2']"`)                               | API keys for the selected LLM provider.                                |
+| `EMPLOYER_BLOCK`  | *list* (`"['id1', 'id2']"`)                                 | Filter vacancies by employer id                                       |
+| `API_KEYS`        | *list* (`"['key1', 'key2']"`)                               | API keys for the selected LLM provider.                               |
 | `OPENAI_BASE_URL` | *string*                                                    | Optional OpenAI-compatible base URL (default empty).                  |
 | `RETRIES`         | *integer*                                                   | Number of retries for LLM calls (default `10`).                       |
 | `DATA_PATH`       | *string*                                                    | Base data directory (default `data`).                                 |
