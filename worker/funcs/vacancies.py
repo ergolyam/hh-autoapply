@@ -33,7 +33,7 @@ salary: {vac['salary']}\n
         selection = bot.show_selection()
         ntfy_title = f'[{vid}]: {vac['name']}'
         ntfy_msg = f'''
-llm selected: {selection}
+llm selected: {selection} {"✅" if selection else "❌"}
 llm commented: {result}
         '''
 
