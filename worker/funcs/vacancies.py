@@ -1,5 +1,6 @@
 from worker.config.config import settings
-from worker.core.helpers import Common, Log
+from worker.core.helpers import Common
+from worker.core.logs import Log
 from worker.api.get_vacancies import vacancies_request, vacancy_detals
 from worker.scrap.post_vacancy import post_vacancy
 from worker.funcs.chatbot import VacancyBot

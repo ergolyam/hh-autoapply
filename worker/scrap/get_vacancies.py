@@ -1,6 +1,6 @@
 from urllib.parse import urlparse, quote_plus
 from worker.config.config import settings
-from worker.core.helpers import Log
+from worker.core.logs import Log
 
 
 async def get_vacancies(page, search_text: str, page_index: int = 0) -> dict:

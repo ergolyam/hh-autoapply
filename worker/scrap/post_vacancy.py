@@ -1,4 +1,4 @@
-from worker.core.helpers import Log
+from worker.core.logs import Log
 from worker.config.config import settings
 
 

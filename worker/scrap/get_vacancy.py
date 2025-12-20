@@ -1,6 +1,7 @@
 import re
-from worker.core.helpers import Log
+from worker.core.logs import Log
 from worker.core.browser import optional_inner_text
+
 
 def clean_text(text: str) -> str:
     return re.sub(r'\s+', ' ', text).strip()

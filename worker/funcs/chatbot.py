@@ -5,7 +5,8 @@ from pydantic_ai.messages import (
 
 from worker.core.llm import build_model_for_key
 
-from worker.core.helpers import Common, Log, KeyRotator, AsyncTimer
+from worker.core.helpers import Common, KeyRotator, AsyncTimer
+from worker.core.logs import Log
 from worker.config.config import settings
 
 

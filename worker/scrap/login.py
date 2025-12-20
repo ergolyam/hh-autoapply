@@ -1,5 +1,5 @@
 from worker.config.config import settings
-from worker.core.helpers import Log
+from worker.core.logs import Log
 from worker.api.ntfy_img import send_notify_image
 
 

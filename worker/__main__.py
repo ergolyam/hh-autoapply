@@ -11,7 +11,7 @@ from worker.core.llm import init_llm
 from worker.db.db import init as init_db
 from worker.db.db import close as close_db
 from worker.config.config import settings
-from worker.core.helpers import Log
+from worker.core.logs import Log
 
 
 async def main():
