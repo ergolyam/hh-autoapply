@@ -29,12 +29,14 @@ class AsyncTimer:
     def __init__(self, delay: float):
         self.delay = delay
         self._last_time = 0.0
+        self._lock = asyncio.Lock()
 
     async def __aenter__(self):
-        now = time.monotonic()
-        wait = self.delay - (now - self._last_time)
-        if wait > 0:
-            await asyncio.sleep(wait)
+        async with self._lock:
+            now = time.monotonic()
+            wait = self.delay - (now - self._last_time)
+            if wait > 0:
+                await asyncio.sleep(wait)
 
     async def __aexit__(self, exc_type, exc, tb):
         self._last_time = time.monotonic()
@@ -60,7 +62,7 @@ class Common():
     cerebras_provider = pydantic_ai.providers.cerebras.CerebrasProvider
     agent_selection = False
     post_timer = AsyncTimer(10)
-    api_timer = AsyncTimer(5)
+
 
 def selection(boolean: bool) -> bool:
     '''

@@ -5,7 +5,7 @@ from pydantic_ai.messages import (
 
 from worker.core.llm import build_model_for_key
 
-from worker.core.helpers import Common, Log, KeyRotator
+from worker.core.helpers import Common, Log, KeyRotator, AsyncTimer
 from worker.config.config import settings
 
 
@@ -15,6 +15,7 @@ class VacancyBot:
         self.filter_phrase = ''
         self.system_prompt = []
         self.key_rotator = KeyRotator(settings.api_keys)
+        self.timer = AsyncTimer(5)
 
     def set_filter_phrase(self, phrase):
         self.filter_phrase = phrase
@@ -36,11 +37,12 @@ class VacancyBot:
                 model = build_model_for_key(api_key)
                 model_kwargs['model'] = model
             try:
-                result = await Common.agent.run(
-                    msg,
-                    message_history=self.system_prompt,
-                    **model_kwargs
-                )
+                async with self.timer:
+                    result = await Common.agent.run(
+                        msg,
+                        message_history=self.system_prompt,
+                        **model_kwargs
+                    )
                 self.agent_result = result.output
                 return
             except Exception as e:

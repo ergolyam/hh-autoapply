@@ -1,4 +1,3 @@
-import asyncio, time
 from worker.config.config import settings
 from worker.core.helpers import Common, Log
 from worker.api.get_vacancies import vacancies_request, vacancy_detals
@@ -28,8 +27,7 @@ salary: {vac['salary']}\n
         '''
         
         Log.log.info(f'Processing with GPT Bot...')
-        async with Common.api_timer:
-            await bot.run_bot(bot_msg)
+        await bot.run_bot(bot_msg)
         result = bot.show_agent_result()
         selection = bot.show_selection()
         ntfy_title = f'[{vid}]: {vac['name']}'
