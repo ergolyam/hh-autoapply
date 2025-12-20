@@ -28,7 +28,8 @@ salary: {vac['salary']}\n
         '''
         
         Log.log.info(f'Processing with GPT Bot...')
-        await bot.run_bot(bot_msg)
+        async with Common.api_timer:
+            await bot.run_bot(bot_msg)
         result = bot.show_agent_result()
         selection = bot.show_selection()
         ntfy_title = f'[{vid}]: {vac['name']}'
@@ -40,13 +41,8 @@ llm commented: {result}
         access = True
         if selection:
             Log.log.info('Response to vacancy...')
-            now = time.monotonic()
-            wait = Common.post_delay - (now - Common.last_post_time)
-            if wait > 0:
-                Log.log.info(f'Sleep {wait}...')
-                await asyncio.sleep(wait)
-            access = await post_vacancy(page, url=vurl)
-            Common.last_post_time = time.monotonic()
+            async with Common.post_timer:
+                access = await post_vacancy(page, url=vurl)
         if not access:
             ntfy_msg = 'Unable to respond to the vacancy.'
             selection = False

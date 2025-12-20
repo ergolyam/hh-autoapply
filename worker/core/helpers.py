@@ -1,4 +1,4 @@
-import httpx, io, logging, asyncio, itertools
+import httpx, io, logging, asyncio, itertools, time
 from contextvars import ContextVar
 from contextlib import contextmanager
 
@@ -25,6 +25,21 @@ async def take_screenshot(page, *, full_page: bool = False, img_type: str = 'png
     return io.BytesIO(data)
 
 
+class AsyncTimer:
+    def __init__(self, delay: float):
+        self.delay = delay
+        self._last_time = 0.0
+
+    async def __aenter__(self):
+        now = time.monotonic()
+        wait = self.delay - (now - self._last_time)
+        if wait > 0:
+            await asyncio.sleep(wait)
+
+    async def __aexit__(self, exc_type, exc, tb):
+        self._last_time = time.monotonic()
+
+
 class Common():
     client_timeout = httpx.Timeout(30.0)
     http = httpx.AsyncClient(timeout=client_timeout)
@@ -44,9 +59,8 @@ class Common():
     cerebras_model = pydantic_ai.models.cerebras.CerebrasModel
     cerebras_provider = pydantic_ai.providers.cerebras.CerebrasProvider
     agent_selection = False
-    last_post_time = 0.0
-    post_delay = 10
-
+    post_timer = AsyncTimer(10)
+    api_timer = AsyncTimer(5)
 
 def selection(boolean: bool) -> bool:
     '''
