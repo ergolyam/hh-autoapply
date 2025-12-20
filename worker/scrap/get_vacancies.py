@@ -20,7 +20,7 @@ async def get_vacancies(page, search_text: str, page_index: int = 0) -> dict:
 
     vacancies = {
         'count': count,
-        'index': []
+        'items': []
     }
 
     for i in range(count):
@@ -37,7 +37,7 @@ async def get_vacancies(page, search_text: str, page_index: int = 0) -> dict:
         vacancy_id = urlparse(link).path.strip("/").split("/")[-1]
 
         if title and link:
-            vacancies['index'].append({
+            vacancies['items'].append({
                 'id': vacancy_id,
                 'title': title,
                 'link': link,
