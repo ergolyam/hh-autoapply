@@ -29,7 +29,7 @@ async def vacancies_request(page: int = 0):
         if blocked:
             items = [
                 v for v in items
-                if str(v.get('employer', {}).get('id')) not in blocked
+                if str((v.get('employer') or {}).get('id')) not in blocked
             ]
         vacancies = []
         for item in items:
@@ -37,7 +37,7 @@ async def vacancies_request(page: int = 0):
             vid = item.get('id')
             vacancy = {
                 'id': vid,
-                'employer_id': item['employer']['id'],
+                'employer_id': item.get('employer'),
                 'name': item['name'],
                 'link': item['alternate_url'],
                 'salary': f'{salary.get('from') if salary else 0} {salary.get('currency') if salary else 'Null'}'
