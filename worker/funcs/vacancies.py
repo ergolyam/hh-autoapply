@@ -80,7 +80,10 @@ async def cycle_responses(page):
             break
 
         Log.log.info(f'Found {count} vacancies on page {page_index}')
-        await send_notify(title=f'Page {page_index}', text=f'Found {count} vacancies.')
+        await send_notify(
+            title=f'Page {page_index}',
+            text=(f'Found {count} vacancies.\nSearch Index: {settings.search_text}')
+        )
         
         for vac in vacancies:
             await process_vacancy(page, vac, bot)
