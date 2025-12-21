@@ -71,10 +71,11 @@ async def cycle_responses(page):
     bot.set_filter_phrase(settings.filter_phrase)
 
     page_index = 0
+    count = 0
     while True:
         vacancies_data = await vacancies_request(page=page_index)
         vacancies = vacancies_data['items']
-        count = len(vacancies)
+        count = count + len(vacancies)
         if not count:
             msg = f'All pages are clicked through.'
             await send_notify(text=msg)

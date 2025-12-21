@@ -5,11 +5,12 @@ from worker.db.vacancies import add_vac
 
 async def cycle_negotiations(page):
     page_index = 0
+    count = 0
     while True:
         negotiations_data = await get_negotiations(page, page_index)
 
         negotiations = negotiations_data['items']
-        count = negotiations_data['count']
+        count = count + negotiations_data['count']
         if not count:
             msg = f'All pages are added to DB.'
             Log.log.warning(msg)
