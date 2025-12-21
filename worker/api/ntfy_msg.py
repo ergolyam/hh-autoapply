@@ -10,7 +10,7 @@ async def send_notify(
         extra_topic: str = ''
 ):
     url = f'{settings.ntfy_url}/{settings.ntfy_topic}'
-    if settings.ntfy_suffix:
+    if settings.ntfy_suffix and extra_topic:
         url = url + f'-{extra_topic.lower()}'
 
     kargs: dict = {

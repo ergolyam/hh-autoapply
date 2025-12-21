@@ -61,7 +61,7 @@ llm commented: {result}
                 title=ntfy_title,
                 text=ntfy_msg,
                 click=vurl,
-                extra_topic=selection
+                extra_topic=str(selection)
             )
 
         await add_vac(vac_id=vid, status=selection)

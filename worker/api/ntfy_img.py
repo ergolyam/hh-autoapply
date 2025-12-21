@@ -16,7 +16,7 @@ async def send_notify_image(
 ):
     image = await take_screenshot(page)
     url = f'{settings.ntfy_url}/{settings.ntfy_topic}'
-    if settings.ntfy_suffix:
+    if settings.ntfy_suffix and extra_topic:
         url = url + f'-{extra_topic.lower()}'
 
     if isinstance(image, io.BytesIO):
