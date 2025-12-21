@@ -11,7 +11,7 @@ async def cycle_negotiations(page):
 
         negotiations = negotiations_data['items']
         count = count + negotiations_data['count']
-        if not count:
+        if not negotiations_data['count']:
             msg = f'All pages are added to DB.'
             Log.log.warning(msg)
             break

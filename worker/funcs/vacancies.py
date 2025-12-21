@@ -90,7 +90,7 @@ async def cycle_responses(page):
             vacancies_data = await vacancies_request(page=page_index)
         vacancies = vacancies_data['items']
         count = count + len(vacancies)
-        if not count:
+        if not len(vacancies):
             msg = f'All pages are clicked through.'
             await send_notify(text=msg)
             Log.log.warning(msg)
