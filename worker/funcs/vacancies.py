@@ -69,7 +69,7 @@ llm commented: {result}
 
 
 async def cycle_responses(page):
-    if settings.ntfy_split:
+    if settings.ntfy_suffix:
         topics = [ 'true', 'false', 'access', 'error' ]
         await send_notify(
             title='Separate topics mode enabled',
