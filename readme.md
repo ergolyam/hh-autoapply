@@ -34,6 +34,7 @@ python -m venv .venv
     # Optional
     HH_DOMAIN="hh.ru"
     NTFY_URL="https://ntfy.sh"
+    NTFY_SUFFIX="False"
     OPENAI_BASE_URL=""
     RETRIES=10
     DATA_PATH="data"
@@ -67,6 +68,7 @@ The following environment variables control the startup of the project:
 | `CHROME_PATH`     | *string*                                                    | Path to Chrome/Chromium executable (default `/bin/chrome`).           |
 | `NTFY_URL`        | *URL*                                                       | ntfy base URL (default `https://ntfy.sh`).                            |
 | `NTFY_TOPIC`      | *string*                                                    | ntfy topic name used for notifications.                               |
+| `NTFY_SUFFIX`     | *bool*                                                      | ntfy subtopics available `true`, `false`, `access`, `error`           |
 
 ## Features
 
