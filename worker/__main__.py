@@ -71,12 +71,13 @@ async def main():
             Log.log.info(f'Auth state saved to: {state_file}')
             await get_user(page)
     except Exception:
-        Log.log.exception(f'An error occurred')
+        msg_error = 'An error occurred'
+        Log.log.exception(msg_error)
         if page:
             await send_notify_image(
                 page,
                 filename='error.png',
-                title='Playwright error',
+                title=msg_error,
                 priority='max',
                 extra_topic='error'
             )
