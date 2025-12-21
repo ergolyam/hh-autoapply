@@ -58,6 +58,7 @@ class Common():
     cerebras_provider = pydantic_ai.providers.cerebras.CerebrasProvider
     agent_selection = False
     post_timer = AsyncTimer(10)
+    api_timer = AsyncTimer(1)
 
 
 def selection(boolean: bool) -> bool:

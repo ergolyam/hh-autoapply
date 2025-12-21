@@ -86,7 +86,8 @@ async def cycle_responses(page):
     page_index = 0
     count = 0
     while True:
-        vacancies_data = await vacancies_request(page=page_index)
+        async with Common.api_timer:
+            vacancies_data = await vacancies_request(page=page_index)
         vacancies = vacancies_data['items']
         count = count + len(vacancies)
         if not count:
