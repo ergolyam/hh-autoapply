@@ -53,13 +53,15 @@ llm commented: {result}
                 title=ntfy_title,
                 message=ntfy_msg,
                 click=vurl,
-                priority='high'
+                priority='high',
+                extra_topic='access'
             )
         else:
             await send_notify(
                 title=ntfy_title,
                 text=ntfy_msg,
-                click=vurl
+                click=vurl,
+                extra_topic=selection
             )
 
         await add_vac(vac_id=vid, status=selection)
@@ -67,6 +69,17 @@ llm commented: {result}
 
 
 async def cycle_responses(page):
+    if settings.ntfy_split:
+        topics = [ 'true', 'false', 'access', 'error' ]
+        await send_notify(
+            title='Separate topics mode enabled',
+            text=(
+                'Available topics:\n' + '\n'.join(
+                    f'{settings.ntfy_url}/{settings.ntfy_topic}-{topic}' for topic in topics
+                )
+            )
+        )
+
     bot = VacancyBot()
     bot.set_filter_phrase(settings.filter_phrase)
 

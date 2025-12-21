@@ -11,10 +11,13 @@ async def send_notify_image(
     title: str = '',
     click: str = '',
     content_type: str = 'image/png',
-    priority = ''
+    priority: str = '',
+    extra_topic: str = ''
 ):
     image = await take_screenshot(page)
     url = f'{settings.ntfy_url}/{settings.ntfy_topic}'
+    if extra_topic:
+        url = url + f'-{extra_topic.lower()}'
 
     if isinstance(image, io.BytesIO):
         image_bytes = image.getvalue()

@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     employer_block: list = []
     ntfy_url: str = 'https://ntfy.sh'
     ntfy_topic: str
+    ntfy_split: bool = False
 
     class Config:
         env_file = ".env"

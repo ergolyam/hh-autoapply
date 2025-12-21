@@ -6,7 +6,6 @@ from worker.core.browser import init_browser
 from worker.api.ntfy_img import send_notify_image
 from worker.scrap.login import prepare_page
 from worker.scrap.get_info import get_user
-from worker.scrap.get_negotiations import get_negotiations
 from worker.funcs.vacancies import cycle_responses
 from worker.core.llm import init_llm
 from worker.db.db import init as init_db
@@ -74,7 +73,13 @@ async def main():
     except Exception:
         Log.log.exception(f'An error occurred')
         if page:
-            await send_notify_image(page, filename='error.png', title='Playwright error', priority='max')
+            await send_notify_image(
+                page,
+                filename='error.png',
+                title='Playwright error',
+                priority='max',
+                extra_topic='error'
+            )
     finally:
         if cycle_task and not cycle_task.done():
             cycle_task.cancel()

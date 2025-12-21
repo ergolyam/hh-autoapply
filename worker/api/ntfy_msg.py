@@ -6,9 +6,12 @@ async def send_notify(
         text: str,
         title: str = '',
         click: str = '',
-        priority = ''
+        priority: str = '',
+        extra_topic: str = ''
 ):
     url = f'{settings.ntfy_url}/{settings.ntfy_topic}'
+    if extra_topic:
+        url = url + f'-{extra_topic.lower()}'
 
     kargs: dict = {
         'url': url,
