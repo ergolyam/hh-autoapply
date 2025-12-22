@@ -85,21 +85,32 @@ async def cycle_responses(page):
 
     page_index = 0
     count = 0
+    max_pages = None
     while True:
-        async with Common.api_timer:
-            vacancies_data = await vacancies_request(page=page_index)
-        vacancies = vacancies_data['items']
-        count = count + len(vacancies)
-        if not len(vacancies):
-            msg = f'All pages are clicked through.'
+        if max_pages is not None and page_index >= max_pages:
+            msg = 'All vacancies on the accessible pages have been reviewed.'
             await send_notify(text=msg)
             Log.log.warning(msg)
             break
 
-        Log.log.info(f'Found {count}/{vacancies_data['total']} vacancies on page {page_index}/{vacancies_data['pages']}')
+        async with Common.api_timer:
+            vacancies_data = await vacancies_request(page=page_index)
+        vacancies = vacancies_data['items']
+        total = vacancies_data['total']
+        max_pages = vacancies_data['pages']
+
+        if not len(vacancies):
+            msg = f'All vacancies on the accessible pages have been reviewed.'
+            await send_notify(text=msg)
+            Log.log.warning(msg)
+            break
+
+        count = count + len(vacancies)
+
+        Log.log.info(f'Found {count}/{total} vacancies on page {page_index}/{max_pages}')
         await send_notify(
-            title=f'Page {page_index}/{vacancies_data['pages']}',
-            text=(f'Found {count}/{vacancies_data['total']} vacancies.\nSearch Index: {settings.search_text}')
+            title=f'Page {page_index}/{max_pages}',
+            text=(f'Found {count}/{total} vacancies.\nSearch Index: {settings.search_text}')
         )
         
         for vac in vacancies:
