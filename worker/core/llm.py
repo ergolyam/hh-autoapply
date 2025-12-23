@@ -1,5 +1,5 @@
 import pydantic_ai
-from typing import Any, Literal, cast
+from typing import Any, Literal
 
 from worker.config.config import settings
 from worker.core.helpers import Common, selection
@@ -59,16 +59,7 @@ async def init_llm():
         agent_kwargs['model_settings'] = Common.gemini_model_settings(
             gemini_safety_settings=[
                 Common.gemini_model_safety_settings(
-                    category=cast(
-                        Literal[
-                            'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-                            'HARM_CATEGORY_HATE_SPEECH',
-                            'HARM_CATEGORY_HARASSMENT',
-                            'HARM_CATEGORY_DANGEROUS_CONTENT',
-                            'HARM_CATEGORY_CIVIC_INTEGRITY',
-                        ],
-                        cat,
-                    ),
+                    category=cat,
                     threshold='BLOCK_NONE',
                 )
                 for cat in categories
