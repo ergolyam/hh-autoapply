@@ -41,7 +41,6 @@ class AsyncTimer:
 class Common():
     client_timeout = httpx.Timeout(30.0)
     http = httpx.AsyncClient(timeout=client_timeout)
-    client_agent = httpx.AsyncClient(timeout=client_timeout)
     model: pydantic_ai.models.Model
     agent: pydantic_ai.Agent
     openai_model = pydantic_ai.models.openai.OpenAIChatModel
