@@ -1,7 +1,11 @@
 from worker.core.helpers import Common
 from worker.config.config import settings
 
-async def request(path: str, extra_headers: dict = {}, params: dict = {}):
+async def request(
+        path: str,
+        extra_headers: dict | None = None,
+        params: dict | None = None
+):
     headers = {
         'Accept': 'application/json',
         'User-Agent': f'hh-autoapply/1.0 (user@email.ru)',
@@ -10,16 +14,8 @@ async def request(path: str, extra_headers: dict = {}, params: dict = {}):
         headers.update(extra_headers)
     
     url = f'https://api.{settings.hh_domain}/{path}'
-
-    kargs = {
-        'url': url,
-        'headers': headers
-    }
-
-    if params:
-        kargs['params'] = params
     
-    response = await Common.http.get(**kargs)
+    response = await Common.http.get(url=url, headers=headers, params=params)
     if response.status_code == 200:
         data = response.json()
         return {'ok': True, 'data': data}
