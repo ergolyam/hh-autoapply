@@ -13,24 +13,24 @@ async def send_notify(
     if settings.ntfy_suffix and extra_topic:
         url = url + f'-{extra_topic.lower()}'
 
-    kargs: dict = {
+    kwargs: dict = {
         'url': url,
         'content': text.encode(encoding='utf-8')
     }
 
     if title or click:
-        kargs.setdefault('headers', {})
+        kwargs.setdefault('headers', {})
 
     if title:
-        kargs['headers']['Title'] = title.encode(encoding='utf-8')
+        kwargs['headers']['Title'] = title.encode(encoding='utf-8')
 
     if click:
-        kargs['headers']['Click'] = click
+        kwargs['headers']['Click'] = click
 
     if priority:
-        kargs['headers']['Priority'] = priority
+        kwargs['headers']['Priority'] = priority
 
-    response = await Common.http.post(**kargs)
+    response = await Common.http.post(**kwargs)
     if response.status_code == 200:
         return
 
