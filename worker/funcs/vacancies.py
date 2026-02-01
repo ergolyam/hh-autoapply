@@ -8,6 +8,9 @@ from worker.api.ntfy_msg import send_notify
 from worker.api.ntfy_img import send_notify_image
 from worker.db.vacancies import add_vac, get_vac
 
+class StopCycleResponses(Exception):
+    pass
+
 
 async def process_vacancy(page, vac, bot):
     vid = vac['id']
@@ -38,24 +41,33 @@ llm selected: {selection} {emoji_str}
 llm commented: {result}
         '''
 
+        status = {}
         access = True
         if selection:
             Log.log.info('Response to vacancy...')
             async with Common.post_timer:
-                access = await post_vacancy(page, url=vurl)
+                status = await post_vacancy(page, url=vurl)
+                access = status['ok']
         if not access:
-            ntfy_msg = 'Unable to respond to the vacancy.'
-            selection = False
-            Log.log.error(ntfy_msg)
-            await send_notify_image(
-                page,
-                filename='not_access.png',
-                title=ntfy_title,
-                message=ntfy_msg,
-                click=vurl,
-                priority='high',
-                extra_topic='access'
-            )
+            msg = status['status']
+            match msg:
+                case 'questions_required':
+                    ntfy_msg = 'Unable to respond to the vacancy.'
+                    selection = False
+                    Log.log.error(ntfy_msg)
+                    await send_notify_image(
+                        page,
+                        filename='not_access.png',
+                        title=ntfy_title,
+                        message=ntfy_msg,
+                        click=vurl,
+                        priority='high',
+                        extra_topic='access'
+                    )
+                case 'response_button_click_failed':
+                    raise StopCycleResponses(msg)
+                case 'daily_limit':
+                    raise StopCycleResponses(msg)
         else:
             await send_notify(
                 title=ntfy_title,
@@ -113,8 +125,25 @@ async def cycle_responses(page):
             text=(f'Found {count}/{total} vacancies.\nSearch Index: {settings.search_text}')
         )
         
+        stop_reason = ''
+
         for vac in vacancies:
-            await process_vacancy(page, vac, bot)
+            try:
+                await process_vacancy(page, vac, bot)
+            except StopCycleResponses as e:
+                stop_reason = e
+                break
+
+        if stop_reason:
+            msg = f'Stopping cycle: {stop_reason}'
+            Log.log.warning(msg)
+            await send_notify(
+                title='Cycle stopped',
+                text=msg,
+                priority='max',
+                extra_topic='error'
+            )
+            break
 
         page_index = page_index + 1
 
