@@ -11,7 +11,7 @@ async def prepare_page(page):
 
     await page.locator('[data-qa="submit-button"]').click()
 
-    await page.get_by_text('Почта', exact=True).click()
+    await page.locator('label:has(input[type="radio"][value="EMAIL"])').click()
 
     await page.locator('[data-qa="applicant-login-input-email"]').fill(settings.email)
 
@@ -29,8 +29,11 @@ async def prepare_page(page):
 
     code = Log.console.input('[green3]Enter the code from email:[/] ')
 
-    await page.locator('[data-qa="applicant-login-input-otp"]').fill(code)
+    otp = page.locator('[data-qa="applicant-login-input-otp"]')
+    await otp.wait_for(state="visible")
+    await otp.click()
 
+    await otp.press_sequentially(code)
 
 if __name__ == '__main__':
     raise RuntimeError('This module should be run only via main.py')
