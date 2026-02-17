@@ -11,6 +11,12 @@ async def post_vacancy(page, url = None) -> dict:
         Log.log.info(f'Vacancy: {title}')
 
     try:
+        await page.get_by_text('Вы откликнулись', exact=False).first.wait_for(state='visible')
+        return {'ok': True, 'status': 'already_responded'}
+    except:
+        pass
+
+    try:
         await page.locator('div.vacancy-actions [data-qa="vacancy-response-link-top"]').first.click()
     except:
         return {'ok': False, 'status': 'response_button_click_failed'}

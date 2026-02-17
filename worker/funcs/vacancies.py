@@ -69,6 +69,8 @@ llm commented: {result}
                 case 'daily_limit':
                     raise StopCycleResponses(msg)
         else:
+            if status['status'] == 'already_responded':
+                ntfy_msg = ntfy_msg + '\n⚠️ Already responded'
             await send_notify(
                 title=ntfy_title,
                 text=ntfy_msg,
