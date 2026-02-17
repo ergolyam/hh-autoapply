@@ -11,7 +11,7 @@ async def post_vacancy(page, url = None) -> dict:
         Log.log.info(f'Vacancy: {title}')
 
     try:
-        await page.get_by_text('Вы откликнулись', exact=False).first.wait_for(state='visible')
+        await page.get_by_text('Вы откликнулись', exact=False).first.wait_for(state='visible', timeout=3000)
         return {'ok': True, 'status': 'already_responded'}
     except:
         pass
@@ -22,7 +22,7 @@ async def post_vacancy(page, url = None) -> dict:
         return {'ok': False, 'status': 'response_button_click_failed'}
 
     try:
-        await page.get_by_text('Вы исчерпали лимит откликов', exact=False).first.wait_for(state='visible')
+        await page.get_by_text('Вы исчерпали лимит откликов', exact=False).first.wait_for(state='visible', timeout=3000)
         return {'ok': False, 'status': 'daily_limit'}
     except:
         pass
