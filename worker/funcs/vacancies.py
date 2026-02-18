@@ -128,12 +128,14 @@ async def cycle_responses(page):
         )
         
         stop_reason = ''
+        vurl = ''
 
         for vac in vacancies:
             try:
                 await process_vacancy(page, vac, bot)
             except StopCycleResponses as e:
                 stop_reason = e
+                vurl = vac['link']
                 break
 
         if stop_reason:
@@ -143,7 +145,8 @@ async def cycle_responses(page):
                 title='Cycle stopped',
                 text=msg,
                 priority='max',
-                extra_topic='error'
+                extra_topic='error',
+                click=vurl
             )
             break
 
